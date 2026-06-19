@@ -1,0 +1,35 @@
+[
+  {
+    "Title": "Junior .NET Developer",
+    "CompanyName": "Vodafone Egypt",
+    "CompanyEmail": "careers@vodafone.com",
+    "Description": "مطور دوت نت مبتدئ للعمل على تحسين وتطوير الأنظمة الداخلية للشركة وإدارة قواعد البيانات.",
+    "Requirements": "C#, ASP.NET Core, SQL Server, Entity Framework, OOP",
+    "Location": "Smart Village, Cairo",
+    "SalaryRange": 16000,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  },
+  {
+    "Title": "Site Electrical Engineer",
+    "CompanyName": "Dar Al-Handasah",
+    "CompanyEmail": "hr@dar.com",
+    "Description": "مهندس موقع كهرباء مسؤول عن الإشراف على التنفيذ ومطابقة المخططات الهندسية في الموقع والمشاريع القائمة.",
+    "Requirements": "BSc in Electrical Engineering, AutoCAD, Revit, Site Experience",
+    "Location": "New Capital, Cairo",
+    "SalaryRange": 12000,
+    "TargetFaculty": "Engineering",
+    "IsApproved": true
+  },
+  {
+    "Title": "Embedded Systems Trainee",
+    "CompanyName": "Valeo Egypt",
+    "CompanyEmail": "valeo-jobs@valeo.com",
+    "Description": "فرصة تدريب مكثف في مجال الأنظمة المدمجة واختبار البرمجيات للسيارات الذكية والأنظمة الذاتية.",
+    "Requirements": "Embedded C, Microcontrollers, Software Testing Basics",
+    "Location": "Remote",
+    "SalaryRange": 6000,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  }
+]

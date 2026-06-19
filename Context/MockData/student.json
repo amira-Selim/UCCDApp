@@ -1,0 +1,12 @@
+[
+  { "id": 1, "email": "ahmed1@test.com", "fullName": "Ahmed Ali Hassan", "phone": "0100000001", "gender": "Male", "faculty": "Engineering", "nationalID": "29801011234567", "graduationYear": "2025" },
+  { "id": 2, "email": "sara2@test.com", "fullName": "Sara Mohamed Ali", "phone": "0100000002", "gender": "Female", "faculty": "Computer Science", "nationalID": "29902021234567", "graduationYear": "2024" },
+  { "id": 3, "email": "omar3@test.com", "fullName": "Omar Khaled Mahmoud", "phone": "0100000003", "gender": "Male", "faculty": "Business", "nationalID": "30003031234567", "graduationYear": "2026" },
+  { "id": 4, "email": "nada4@test.com", "fullName": "Nada Adel Hussein", "phone": "0100000004", "gender": "Female", "faculty": "Arts", "nationalID": "30104041234567", "graduationYear": "2023" },
+  { "id": 5, "email": "mohamed5@test.com", "fullName": "Mohamed Samir Fathy", "phone": "0100000005", "gender": "Male", "faculty": "Engineering", "nationalID": "30205051234567", "graduationYear": "2025" },
+  { "id": 6, "email": "rana6@test.com", "fullName": "Rana Tarek Amin", "phone": "0100000006", "gender": "Female", "faculty": "Medicine", "nationalID": "30306061234567", "graduationYear": "2027" },
+  { "id": 7, "email": "youssef7@test.com", "fullName": "Youssef Adel Nabil", "phone": "0100000007", "gender": "Male", "faculty": "Computer Science", "nationalID": "30407071234567", "graduationYear": "2024" },
+  { "id": 8, "email": "laila8@test.com", "fullName": "Laila Ibrahim Said", "phone": "0100000008", "gender": "Female", "faculty": "Pharmacy", "nationalID": "30508081234567", "graduationYear": "2026" },
+  { "id": 9, "email": "hassan9@test.com", "fullName": "Hassan Mostafa Eid", "phone": "0100000009", "gender": "Male", "faculty": "Law", "nationalID": "30609091234567", "graduationYear": "2025" },
+  { "id": 10, "email": "dina10@test.com", "fullName": "Dina Hany Refaat", "phone": "0100000010", "gender": "Female", "faculty": "Commerce", "nationalID": "30710101234567", "graduationYear": "2023" }
+]

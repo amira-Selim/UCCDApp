@@ -1,0 +1,415 @@
+[
+  {
+    "name": "Intro to Web Development",
+    "startDate": "2026-03-01",
+    "duration": 20,
+    "capacity": 30,
+    "price": 2500,
+    "certificationFee": 200,
+    "type": "Training"
+  },
+  {
+    "name": "Career Planning Workshop",
+    "startDate": "2026-03-10",
+    "duration": 5,
+    "capacity": 50,
+    "price": 800,
+    "certificationFee": 100,
+    "type": "Workshop"
+  },
+  {
+    "name": "Data Analytics Bootcamp",
+    "startDate": "2026-04-05",
+    "duration": 30,
+    "capacity": 25,
+    "price": 4000,
+    "certificationFee": 300,
+    "type": "Training"
+  },
+  {
+    "name": "Interview Skills Advising",
+    "startDate": "2026-03-20",
+    "duration": 3,
+    "capacity": 15,
+    "price": 600,
+    "certificationFee": 80,
+    "type": "Advising"
+  },
+  {
+    "name": "Project Management Essentials",
+    "startDate": "2026-04-12",
+    "duration": 12,
+    "capacity": 20,
+    "price": 1800,
+    "certificationFee": 150,
+    "type": "Training"
+  },
+
+  {
+    "name": "Frontend with React",
+    "startDate": "2026-03-05",
+    "duration": 18,
+    "capacity": 28,
+    "price": 2200,
+    "certificationFee": 180,
+    "type": "Training"
+  },
+  {
+    "name": "Backend with .NET",
+    "startDate": "2026-03-15",
+    "duration": 25,
+    "capacity": 22,
+    "price": 3500,
+    "certificationFee": 250,
+    "type": "Training"
+  },
+  {
+    "name": "UI/UX Design Basics",
+    "startDate": "2026-04-01",
+    "duration": 10,
+    "capacity": 35,
+    "price": 1500,
+    "certificationFee": 120,
+    "type": "Training"
+  },
+  {
+    "name": "Agile & Scrum Workshop",
+    "startDate": "2026-04-08",
+    "duration": 3,
+    "capacity": 40,
+    "price": 700,
+    "certificationFee": 90,
+    "type": "Workshop"
+  },
+  {
+    "name": "Public Speaking Workshop",
+    "startDate": "2026-03-25",
+    "duration": 2,
+    "capacity": 45,
+    "price": 500,
+    "certificationFee": 70,
+    "type": "Workshop"
+  },
+
+  {
+    "name": "Python for Beginners",
+    "startDate": "2026-05-02",
+    "duration": 20,
+    "capacity": 30,
+    "price": 2400,
+    "certificationFee": 200,
+    "type": "Training"
+  },
+  {
+    "name": "Advanced SQL",
+    "startDate": "2026-05-10",
+    "duration": 12,
+    "capacity": 20,
+    "price": 1600,
+    "certificationFee": 130,
+    "type": "Training"
+  },
+  {
+    "name": "Power BI Essentials",
+    "startDate": "2026-05-15",
+    "duration": 10,
+    "capacity": 25,
+    "price": 1700,
+    "certificationFee": 140,
+    "type": "Training"
+  },
+  {
+    "name": "Machine Learning Basics",
+    "startDate": "2026-06-01",
+    "duration": 30,
+    "capacity": 18,
+    "price": 4200,
+    "certificationFee": 320,
+    "type": "Training"
+  },
+  {
+    "name": "AI Career Advising",
+    "startDate": "2026-06-10",
+    "duration": 2,
+    "capacity": 12,
+    "price": 500,
+    "certificationFee": 60,
+    "type": "Advising"
+  },
+
+  {
+    "name": "DevOps Fundamentals",
+    "startDate": "2026-06-15",
+    "duration": 14,
+    "capacity": 20,
+    "price": 2000,
+    "certificationFee": 160,
+    "type": "Training"
+  },
+  {
+    "name": "Docker & Kubernetes",
+    "startDate": "2026-06-20",
+    "duration": 16,
+    "capacity": 18,
+    "price": 2600,
+    "certificationFee": 190,
+    "type": "Training"
+  },
+  {
+    "name": "Cloud Computing Workshop",
+    "startDate": "2026-06-25",
+    "duration": 3,
+    "capacity": 40,
+    "price": 800,
+    "certificationFee": 100,
+    "type": "Workshop"
+  },
+  {
+    "name": "Cybersecurity Basics",
+    "startDate": "2026-07-01",
+    "duration": 15,
+    "capacity": 22,
+    "price": 2100,
+    "certificationFee": 170,
+    "type": "Training"
+  },
+  {
+    "name": "Ethical Hacking Intro",
+    "startDate": "2026-07-10",
+    "duration": 10,
+    "capacity": 18,
+    "price": 1900,
+    "certificationFee": 150,
+    "type": "Training"
+  },
+
+  {
+    "name": "Mobile App Development",
+    "startDate": "2026-07-15",
+    "duration": 20,
+    "capacity": 25,
+    "price": 3000,
+    "certificationFee": 220,
+    "type": "Training"
+  },
+  {
+    "name": "Flutter Workshop",
+    "startDate": "2026-07-25",
+    "duration": 4,
+    "capacity": 35,
+    "price": 900,
+    "certificationFee": 110,
+    "type": "Workshop"
+  },
+  {
+    "name": "Startup Pitching",
+    "startDate": "2026-08-01",
+    "duration": 2,
+    "capacity": 30,
+    "price": 600,
+    "certificationFee": 80,
+    "type": "Workshop"
+  },
+  {
+    "name": "Leadership Skills",
+    "startDate": "2026-08-05",
+    "duration": 6,
+    "capacity": 20,
+    "price": 1000,
+    "certificationFee": 120,
+    "type": "Training"
+  },
+  {
+    "name": "Time Management Advising",
+    "startDate": "2026-08-10",
+    "duration": 2,
+    "capacity": 10,
+    "price": 400,
+    "certificationFee": 50,
+    "type": "Advising"
+  },
+
+  {
+    "name": "Digital Marketing Basics",
+    "startDate": "2026-08-15",
+    "duration": 12,
+    "capacity": 30,
+    "price": 1600,
+    "certificationFee": 130,
+    "type": "Training"
+  },
+  {
+    "name": "SEO Workshop",
+    "startDate": "2026-08-20",
+    "duration": 2,
+    "capacity": 40,
+    "price": 500,
+    "certificationFee": 70,
+    "type": "Workshop"
+  },
+  {
+    "name": "Content Creation",
+    "startDate": "2026-09-01",
+    "duration": 8,
+    "capacity": 25,
+    "price": 1200,
+    "certificationFee": 100,
+    "type": "Training"
+  },
+  {
+    "name": "Social Media Strategy",
+    "startDate": "2026-09-05",
+    "duration": 6,
+    "capacity": 30,
+    "price": 1100,
+    "certificationFee": 90,
+    "type": "Training"
+  },
+  {
+    "name": "Personal Branding Advising",
+    "startDate": "2026-09-10",
+    "duration": 2,
+    "capacity": 12,
+    "price": 450,
+    "certificationFee": 60,
+    "type": "Advising"
+  },
+
+  {
+    "name": "Financial Literacy",
+    "startDate": "2026-09-15",
+    "duration": 10,
+    "capacity": 35,
+    "price": 1300,
+    "certificationFee": 110,
+    "type": "Training"
+  },
+  {
+    "name": "Entrepreneurship Bootcamp",
+    "startDate": "2026-09-20",
+    "duration": 14,
+    "capacity": 20,
+    "price": 2200,
+    "certificationFee": 180,
+    "type": "Training"
+  },
+  {
+    "name": "Negotiation Skills Workshop",
+    "startDate": "2026-09-25",
+    "duration": 2,
+    "capacity": 40,
+    "price": 600,
+    "certificationFee": 80,
+    "type": "Workshop"
+  },
+  {
+    "name": "Business Model Design",
+    "startDate": "2026-10-01",
+    "duration": 7,
+    "capacity": 25,
+    "price": 1400,
+    "certificationFee": 120,
+    "type": "Training"
+  },
+  {
+    "name": "Mentorship Advising",
+    "startDate": "2026-10-05",
+    "duration": 2,
+    "capacity": 10,
+    "price": 400,
+    "certificationFee": 50,
+    "type": "Advising"
+  },
+
+  {
+    "name": "Product Management",
+    "startDate": "2026-10-10",
+    "duration": 12,
+    "capacity": 20,
+    "price": 1800,
+    "certificationFee": 150,
+    "type": "Training"
+  },
+  {
+    "name": "QA Testing Basics",
+    "startDate": "2026-10-15",
+    "duration": 10,
+    "capacity": 22,
+    "price": 1500,
+    "certificationFee": 120,
+    "type": "Training"
+  },
+  {
+    "name": "Automation Testing",
+    "startDate": "2026-10-20",
+    "duration": 14,
+    "capacity": 18,
+    "price": 2100,
+    "certificationFee": 170,
+    "type": "Training"
+  },
+  {
+    "name": "Linux Fundamentals",
+    "startDate": "2026-10-25",
+    "duration": 8,
+    "capacity": 25,
+    "price": 1200,
+    "certificationFee": 100,
+    "type": "Training"
+  },
+  {
+    "name": "Git & GitHub Workshop",
+    "startDate": "2026-11-01",
+    "duration": 2,
+    "capacity": 45,
+    "price": 500,
+    "certificationFee": 70,
+    "type": "Workshop"
+  },
+
+  {
+    "name": "Clean Code Practices",
+    "startDate": "2026-11-05",
+    "duration": 6,
+    "capacity": 20,
+    "price": 1100,
+    "certificationFee": 90,
+    "type": "Training"
+  },
+  {
+    "name": "System Design Basics",
+    "startDate": "2026-11-10",
+    "duration": 12,
+    "capacity": 18,
+    "price": 2000,
+    "certificationFee": 160,
+    "type": "Training"
+  },
+  {
+    "name": "API Design Workshop",
+    "startDate": "2026-11-15",
+    "duration": 2,
+    "capacity": 35,
+    "price": 650,
+    "certificationFee": 85,
+    "type": "Workshop"
+  },
+  {
+    "name": "Freelancing Advising",
+    "startDate": "2026-11-20",
+    "duration": 2,
+    "capacity": 10,
+    "price": 450,
+    "certificationFee": 60,
+    "type": "Advising"
+  },
+  {
+    "name": "Final Year Project Guidance",
+    "startDate": "2026-11-25",
+    "duration": 3,
+    "capacity": 15,
+    "price": 700,
+    "certificationFee": 90,
+    "type": "Advising"
+  }
+]

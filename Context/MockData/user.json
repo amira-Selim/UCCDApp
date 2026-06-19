@@ -1,0 +1,122 @@
+[
+  {
+    "email": "ahmed1@test.com",
+    "userName": "ahmed1",
+    "fullName": "Ahmed Ali Hassan",
+    "phoneNumber": "0100000001",
+    "gender": "Male",
+    "faculty": "Engineering",
+    "nationalID": "29801011234567",
+    "graduationYear": "2025",
+    "role": "Student",
+    "password": "Password@123"
+  },
+  {
+    "email": "sara2@test.com",
+    "userName": "sara2",
+    "fullName": "Sara Mohamed Ali",
+    "phoneNumber": "0100000002",
+    "gender": "Female",
+    "faculty": "Computer Science",
+    "nationalID": "29902021234567",
+    "graduationYear": "2024",
+    "role": "Student",
+    "password": "Password@123"
+  },
+  {
+    "email": "omar3@test.com",
+    "userName": "omar3",
+    "fullName": "Omar Khaled Mahmoud",
+    "phoneNumber": "0100000003",
+    "gender": "Male",
+    "faculty": "Business",
+    "nationalID": "30003031234567",
+    "graduationYear": "2026",
+    "role": "Student",
+    "password": "Password@123"
+  },
+  {
+    "email": "nada4@test.com",
+    "userName": "nada4",
+    "fullName": "Nada Adel Hussein",
+    "phoneNumber": "0100000004",
+    "gender": "Female",
+    "faculty": "Arts",
+    "nationalID": "30104041234567",
+    "graduationYear": "2023",
+    "role": "Student",
+    "password": "Password@123"
+  },
+  {
+    "email": "mohamed5@test.com",
+    "userName": "mohamed5",
+    "fullName": "Mohamed Samir Fathy",
+    "phoneNumber": "0100000005",
+    "gender": "Male",
+    "faculty": "Engineering",
+    "nationalID": "30205051234567",
+    "graduationYear": "2025",
+    "role": "Student",
+    "password": "Password@123"
+  },
+  {
+    "email": "rana6@test.com",
+    "userName": "rana6",
+    "fullName": "Rana Tarek Amin",
+    "phoneNumber": "0100000006",
+    "gender": "Female",
+    "faculty": "Medicine",
+    "nationalID": "30306061234567",
+    "graduationYear": "2027",
+    "role": "Student",
+    "password": "Password@123"
+  },
+  {
+    "email": "youssef7@test.com",
+    "userName": "youssef7",
+    "fullName": "Youssef Adel Nabil",
+    "phoneNumber": "0100000007",
+    "gender": "Male",
+    "faculty": "Computer Science",
+    "nationalID": "30407071234567",
+    "graduationYear": "2024",
+    "role": "Student",
+    "password": "Password@123"
+  },
+  {
+    "email": "laila8@test.com",
+    "userName": "laila8",
+    "fullName": "Laila Ibrahim Said",
+    "phoneNumber": "0100000008",
+    "gender": "Female",
+    "faculty": "Pharmacy",
+    "nationalID": "30508081234567",
+    "graduationYear": "2026",
+    "role": "Student",
+    "password": "Password@123"
+  },
+  {
+    "email": "hassan9@test.com",
+    "userName": "hassan9",
+    "fullName": "Hassan Mostafa Eid",
+    "phoneNumber": "0100000009",
+    "gender": "Male",
+    "faculty": "Law",
+    "nationalID": "30609091234567",
+    "graduationYear": "2025",
+    "role": "Student",
+    "password": "Password@123"
+  },
+  {
+    "email": "dina10@test.com",
+    "userName": "dina10",
+    "fullName": "Dina Hany Refaat",
+    "phoneNumber": "0100000010",
+    "gender": "Female",
+    "faculty": "Commerce",
+    "nationalID": "30710101234567",
+    "graduationYear": "2023",
+    "role": "Student",
+    "password": "Password@123"
+  }
+]
