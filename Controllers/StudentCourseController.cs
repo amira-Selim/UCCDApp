@@ -27,7 +27,7 @@ namespace UCCD_App.Controllers
             if (string.IsNullOrEmpty(UserEmail)) return Unauthorized();
 
             var result = await _service.EnrollByEmailAsync(UserEmail, courseId);
-            
+
             if (!result.Success) return BadRequest(result);
             return Ok(result);
         }
@@ -51,6 +51,26 @@ namespace UCCD_App.Controllers
             return Ok(result);
         }
 
-        
+        // GET /api/StudentCourse/course/5/students
+        // Used by the Admin "Course Details" page to list everyone enrolled in a course.
+        [Authorize(Roles = "Admin")]
+        [HttpGet("course/{courseId:int}/students")]
+        public async Task<IActionResult> GetEnrolledStudents(int courseId)
+        {
+            var result = await _service.GetEnrolledStudentsAsync(courseId);
+            return Ok(new ApiResponse<List<EnrolledStudentDto>> { Success = true, Data = result });
+        }
+
+        // GET /api/StudentCourse/student/5/courses
+        // Used by the Admin "Student Details" panel to list the courses a student registered for.
+        [Authorize(Roles = "Admin")]
+        [HttpGet("student/{studentId:int}/courses")]
+        public async Task<IActionResult> GetCoursesForStudent(int studentId)
+        {
+            var result = await _service.GetCoursesForStudentAsync(studentId);
+            return Ok(new ApiResponse<List<StudentRegisteredCourseDto>> { Success = true, Data = result });
+        }
+
+
     }
 }

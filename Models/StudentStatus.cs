@@ -4,5 +4,6 @@ public enum StudentStatus
 {
     Aproved,
     Rejected,
-    Pending
+    Pending,
+    Completed
 }

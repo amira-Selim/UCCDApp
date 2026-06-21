@@ -1,6 +1,6 @@
 ﻿namespace UCCD_App.Models;
 
-public class Course:BaseEntity
+public class Course : BaseEntity
 {
     public string Name { get; set; } = "";
     public DateTime? StartDate { get; set; }
@@ -9,6 +9,7 @@ public class Course:BaseEntity
     public decimal Price { get; set; }
     public decimal CertificationFee { get; set; }
     public Type Type { get; set; }
+    public string? Instructor { get; set; }
     //
     public virtual ICollection<StudentCourse> StudentCourses { get; set; }
     = new HashSet<StudentCourse>();

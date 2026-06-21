@@ -34,6 +34,7 @@ public class CoursesController : ControllerBase
             Price = c.Price,
             StartDate = c.StartDate,
             Type = c.Type.ToString(),
+            Instructor = c.Instructor,
         }));
     }
 
@@ -56,6 +57,7 @@ public class CoursesController : ControllerBase
             Price = course.Price,
             StartDate = course.StartDate,
             Type = course.Type.ToString(),
+            Instructor = course.Instructor,
         });
     }
 
@@ -74,7 +76,8 @@ public class CoursesController : ControllerBase
             StartDate = courseDto.StartDate.HasValue
                 ? NormalizeToUtc(courseDto.StartDate.Value)
                 : null,
-            Type = (Type)Enum.Parse(typeof(Type), courseDto.Type, true)
+            Type = (Type)Enum.Parse(typeof(Type), courseDto.Type, true),
+            Instructor = courseDto.Instructor
         };
 
         await courseRepo.AddAsync(course);
@@ -89,6 +92,7 @@ public class CoursesController : ControllerBase
             Price = course.Price,
             StartDate = course.StartDate,
             Type = course.Type.ToString(),
+            Instructor = course.Instructor,
         };
 
         // ✅ الأفضل: 201 Created + Location Header
@@ -110,6 +114,7 @@ public class CoursesController : ControllerBase
         course.Price = courseDto.Price;
         course.StartDate = NormalizeToUtc(courseDto.StartDate);
         course.Type = (Type)Enum.Parse(typeof(Type), courseDto.Type, true);
+        course.Instructor = courseDto.Instructor;
 
         courseRepo.Update(course);
 
@@ -124,6 +129,7 @@ public class CoursesController : ControllerBase
             Price = course.Price,
             StartDate = course.StartDate,
             Type = course.Type.ToString(),
+            Instructor = course.Instructor,
         });
     }
 

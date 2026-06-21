@@ -18,4 +18,5 @@ public class CreateCourseDto
     [Required]
     [RegularExpression("(WorksShop|Training|Advising)")]
     public string Type { get; set; } = "";
+    public string? Instructor { get; set; }
 }

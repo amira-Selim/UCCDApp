@@ -9,5 +9,6 @@
         public decimal Price { get; set; }
         public DateTime StartDate { get; set; }
         public string Type { get; set; } = "";
+        public string? Instructor { get; set; }
     }
 }

@@ -19,4 +19,5 @@ public class CourseResponseDto
     public decimal CertificationFee { get; set; }
     [Required]
     public string Type { get; set; } = "";
+    public string? Instructor { get; set; }
 }

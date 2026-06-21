@@ -8,6 +8,8 @@ public class StudentCourse
     public int CouresId { get; set; }
 
     public StudentStatus StudentStatus { get; set; } = StudentStatus.Pending;
+    public DateTime? EnrolledAt { get; set; }
+    public DateTime? CompletedAt { get; set; }
 
     [ForeignKey("StudentId")]
     public virtual Student? Student { get; set; }
