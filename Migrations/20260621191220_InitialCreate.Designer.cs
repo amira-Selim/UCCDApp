@@ -12,8 +12,8 @@ using UCCD_App.Context;
 namespace UCCD_App.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260615150856_AddJobBoardWithSmartFeatures")]
-    partial class AddJobBoardWithSmartFeatures
+    [Migration("20260621191220_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -256,6 +256,9 @@ namespace UCCD_App.Migrations
                     b.Property<int>("Duration")
                         .HasColumnType("int");
 
+                    b.Property<string>("Instructor")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -398,6 +401,40 @@ namespace UCCD_App.Migrations
                     b.ToTable("Messages");
                 });
 
+            modelBuilder.Entity("UCCD_App.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("UCCD_App.Models.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -459,6 +496,12 @@ namespace UCCD_App.Migrations
                     b.Property<int>("CouresId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EnrolledAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("StudentStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -468,6 +511,40 @@ namespace UCCD_App.Migrations
                     b.HasIndex("CouresId");
 
                     b.ToTable("StudentCourses");
+                });
+
+            modelBuilder.Entity("UCCD_App.Models.Testimonial", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Testimonials");
                 });
 
             modelBuilder.Entity("UCCD_App.Models.VolunteerApplication", b =>

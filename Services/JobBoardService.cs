@@ -228,6 +228,7 @@ public class JobBoardService : IJobBoardService
 
     // 6. عرض الأدمن للمتقدمين لوظيفة معينة
     public async Task<ApiResponse<IEnumerable<JobApplicationResponseDto>>> GetJobApplicationsAsync(int jobId)
+
     {
         var applications = await _context.JobApplications
             .Include(a => a.JobOpportunity)
@@ -249,4 +250,31 @@ public class JobBoardService : IJobBoardService
 
         return new ApiResponse<IEnumerable<JobApplicationResponseDto>> { Success = true, Data = applications };
     }
+
+    public async Task<ApiResponse<IEnumerable<JobApplicationResponseDto>>> GetStudentApplicationsAsync(string studentEmail)
+{
+    var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == studentEmail);
+    if (student == null)
+    {
+        return new ApiResponse<IEnumerable<JobApplicationResponseDto>> { Success = false, Message = "Student not found." };
+    }
+    var applications = await _context.JobApplications
+        .Include(a => a.JobOpportunity)
+        .Where(a => a.StudentId == student.Id)
+        .Select(a => new JobApplicationResponseDto
+        {
+            Id = a.Id,
+            JobOpportunityId = a.JobOpportunityId,
+            JobTitle = a.JobOpportunity.Title,
+            CompanyName = a.JobOpportunity.CompanyName,
+            StudentId = a.StudentId,
+            StudentFullName = student.FullName,
+            StudentEmail = student.Email,
+            StudentFaculty = student.Faculty,
+            CvFilePath = a.CvFilePath,
+            AppliedAt = a.AppliedAt
+        })
+        .ToListAsync();
+    return new ApiResponse<IEnumerable<JobApplicationResponseDto>> { Success = true, Data = applications };
+}
 }

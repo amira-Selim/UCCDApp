@@ -24,6 +24,7 @@ namespace UCCD_App.Extensions
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IJobBoardService, JobBoardService>();
+            services.AddScoped<INotificationService, NotificationService>();
             
             // ====== هنا السطر الجديد لربط خدمة المتطوعين ======
             services.AddScoped<IVolunteerService, VolunteerService>();

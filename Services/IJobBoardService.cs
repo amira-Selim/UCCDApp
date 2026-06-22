@@ -15,4 +15,6 @@ public interface IJobBoardService
     Task<ApiResponse<IEnumerable<JobOpportunityResponseDto>>> GetApprovedJobsForStudentsAsync(string studentEmail, bool filterByMyFacultyOnly);
     Task<ApiResponse<JobOpportunityResponseDto>> GetJobByIdAsync(int id);
     Task<ApiResponse<JobApplicationResponseDto>> ApplyForJobAsync(string studentEmail, int jobId, ApplyJobDto dto);
+
+    Task<ApiResponse<IEnumerable<JobApplicationResponseDto>>> GetStudentApplicationsAsync(string studentEmail);
 }

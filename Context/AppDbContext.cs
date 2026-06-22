@@ -24,6 +24,8 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     // جداول المتطوعين اللي ضفتيها
     public DbSet<VolunteerOpportunity> VolunteerOpportunities { get; set; }
     public DbSet<VolunteerApplication> VolunteerApplications { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Testimonial> Testimonials { get; set; }    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

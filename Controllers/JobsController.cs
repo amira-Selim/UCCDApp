@@ -88,4 +88,16 @@ public class JobsController : ControllerBase
         var response = await _jobBoardService.ApplyForJobAsync(studentEmail, id, dto);
         return response.Success ? Ok(response) : BadRequest(response);
     }
+
+    // GET: api/Jobs/my-applications
+    [Authorize(Roles = "Student")]
+    [HttpGet("my-applications")]
+    public async Task<IActionResult> GetMyApplications()
+    {
+        var studentEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(studentEmail))
+            return Unauthorized(new ApiResponse<object> { Success = false, Message = "User email not found in token." });
+        var response = await _jobBoardService.GetStudentApplicationsAsync(studentEmail);
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
 }
