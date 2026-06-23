@@ -5,7 +5,7 @@
         public int StudentId { get; set; }
         public int CourseId { get; set; }
         public string Status { get; set; } = string.Empty;
-        public CourseDto? CourseDetails { get; set; } 
+        public CourseDto? CourseDetails { get; set; }
     }
 
     public class CourseDto

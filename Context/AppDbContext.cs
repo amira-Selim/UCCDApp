@@ -11,7 +11,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> option) : base(option)
     {
-        
+
     }
 
     public DbSet<Wishlist> Wishlists { get; set; }
@@ -25,7 +25,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<VolunteerOpportunity> VolunteerOpportunities { get; set; }
     public DbSet<VolunteerApplication> VolunteerApplications { get; set; }
     public DbSet<Notification> Notifications { get; set; }
-    public DbSet<Testimonial> Testimonials { get; set; }    
+    public DbSet<Testimonial> Testimonials { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -69,7 +69,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
         // ==========================================
         // الـ Fluent API الجديد الخاص بالمتطوعين (الخطوة التانية اللي تهمنا)
         // ==========================================
-        
+
         // تحويل الـ Enum لـ string عشان يتسيف في الداتا بيز صح زي الـ StudentStatus
         modelBuilder.Entity<VolunteerApplication>()
             .Property(va => va.Status)

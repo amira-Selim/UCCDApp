@@ -24,7 +24,15 @@
 
   <ItemGroup>
     <Folder Include="Context\Migrations\" />
-    <Folder Include="Context\MockData\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Context\MockData\job.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Context\MockData\volunteer.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

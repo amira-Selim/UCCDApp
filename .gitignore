@@ -1,4 +1,7 @@
+
 bin/
 obj/
 .vs/
 *.user
+seed_error.txt
+Properties/PublishProfiles/*.user

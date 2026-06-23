@@ -1,0 +1,50 @@
+[
+  {
+    "Name": "Ahmed Khaled",
+    "Role": "Engineering Student",
+    "Content": "The UCCD employability skills training completely changed my perspective on the job market. The mock interviews were incredibly helpful and I feel much more confident now.",
+    "AvatarUrl": "https://i.pravatar.cc/150?img=11",
+    "IsApproved": true,
+    "CreatedAt": "2026-05-15T10:30:00Z"
+  },
+  {
+    "Name": "Sara Magdy",
+    "Role": "Computer Science Graduate",
+    "Content": "المركز ساعدني كتير إني ألاقي أول وظيفة ليا بعد التخرج من خلال ملتقى التوظيف اللي اتعمل في الكلية. شكراً لكل القائمين على المركز!",
+    "AvatarUrl": "https://i.pravatar.cc/150?img=5",
+    "IsApproved": true,
+    "CreatedAt": "2026-06-01T14:20:00Z"
+  },
+  {
+    "Name": "Omar Tarek",
+    "Role": "Business Administration Student",
+    "Content": "I attended the digital marketing workshop and it was fantastic. The instructor was very knowledgeable and the practical sessions were exactly what I needed.",
+    "AvatarUrl": "https://i.pravatar.cc/150?img=12",
+    "IsApproved": true,
+    "CreatedAt": "2026-06-10T09:15:00Z"
+  },
+  {
+    "Name": "Nourhan Ali",
+    "Role": "Pharmacy Student",
+    "Content": "تجربة التطوع مع مركز التطوير المهني فرقت معايا جداً في بناء مهارات التواصل والعمل في فريق. بنصح أي طالب إنه يشارك في أنشطة المركز.",
+    "AvatarUrl": "https://i.pravatar.cc/150?img=9",
+    "IsApproved": true,
+    "CreatedAt": "2026-06-18T16:45:00Z"
+  },
+  {
+    "Name": "Youssef Hassan",
+    "Role": "Junior Frontend Developer",
+    "Content": "The CV writing session helped me highlight my technical skills properly. Within a month, I started getting interview calls. Highly recommended!",
+    "AvatarUrl": "https://i.pravatar.cc/150?img=13",
+    "IsApproved": true,
+    "CreatedAt": "2026-06-20T11:00:00Z"
+  },
+  {
+    "Name": "Mai Ibrahim",
+    "Role": "Commerce Graduate",
+    "Content": "بفضل استشارات المسار المهني قدرت أحدد المجال اللي حابة أكمل فيه وأخدت الكورسات المناسبة. الدعم اللي بيقدمه المركز بجد ملوش مثيل.",
+    "AvatarUrl": "https://i.pravatar.cc/150?img=20",
+    "IsApproved": true,
+    "CreatedAt": "2026-06-22T13:30:00Z"
+  }
+]

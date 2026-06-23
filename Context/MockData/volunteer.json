@@ -1,0 +1,42 @@
+[
+  {
+    "Title": "Annual Job Fair Organizer",
+    "Description": "Assist in organizing attendee entry/exit and guiding students to the appropriate company booths.",
+    "Committee": "Logistics",
+    "RequiredCount": 15,
+    "Deadline": "2026-10-15T12:00:00Z",
+    "IsActive": true
+  },
+  {
+    "Title": "Graphic Design & Media Assistant",
+    "Description": "Design banners and social media posts for the upcoming UCCD training courses and workshops.",
+    "Committee": "Media & Marketing",
+    "RequiredCount": 5,
+    "Deadline": "2026-07-01T18:30:00Z",
+    "IsActive": true
+  },
+  {
+    "Title": "Employability Skills Training Facilitator",
+    "Description": "Support instructors within the training rooms and set up technical equipment and learning materials.",
+    "Committee": "Training Support",
+    "RequiredCount": 8,
+    "Deadline": "2026-08-20T00:00:00Z",
+    "IsActive": true
+  },
+  {
+    "Title": "Technical Support & Survey Coordinator",
+    "Description": "Collect feedback evaluation forms from students post-workshop and input the data into the system.",
+    "Committee": "Data Management",
+    "RequiredCount": 4,
+    "Deadline": "2026-05-10T15:00:00Z",
+    "IsActive": false
+  },
+  {
+    "Title": "Corporate Relations Welcoming Committee",
+    "Description": "Welcome company representatives on campus and escort them to the designated interview halls.",
+    "Committee": "Public Relations",
+    "RequiredCount": 10,
+    "Deadline": "2026-11-01T09:00:00Z",
+    "IsActive": true
+  }
+]

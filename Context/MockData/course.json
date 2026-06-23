@@ -411,5 +411,14 @@
     "price": 700,
     "certificationFee": 90,
     "type": "Advising"
+  },
+  {
+    "name": "Final Year Project Guidance2",
+    "startDate": "2026-11-25",
+    "duration": 3,
+    "capacity": 15,
+    "price": 700,
+    "certificationFee": 90,
+    "type": "Advising"
   }
 ]

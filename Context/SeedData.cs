@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text.Json;
 using System.Linq;
@@ -67,9 +67,10 @@ public static class SeedData
             Path.Combine(dataPath, "student.json"));
         await SeedCourses(context, Path.Combine(dataPath, "course.json"));
         await SeedVolunteers(context, Path.Combine(dataPath, "volunteer.json"));
-        
+
         // ====== 🏢 نداء الميثود الجديدة للوظائف بنفس نظامك بالظبط ======
         await SeedJobs(context, Path.Combine(dataPath, "job.json"));
+        await SeedTestimonials(context, Path.Combine(dataPath, "testimonial.json"));
     }
 
     private static async Task SeedUsers(
@@ -234,6 +235,41 @@ public static class SeedData
         await context.SaveChangesAsync();
     }
 
+    private static async Task SeedTestimonials(AppDbContext context, string filePath)
+    {
+        var testimonials = LoadJson<TestimonialMock>(filePath);
+        if (testimonials.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var item in testimonials)
+        {
+            if (string.IsNullOrWhiteSpace(item.Name) || string.IsNullOrWhiteSpace(item.Content))
+            {
+                continue;
+            }
+
+            var exists = await context.Testimonials.AnyAsync(t => t.Name == item.Name && t.Content == item.Content);
+            if (exists)
+            {
+                continue;
+            }
+
+            context.Testimonials.Add(new Testimonial
+            {
+                Name = item.Name,
+                Role = item.Role ?? string.Empty,
+                Content = item.Content,
+                AvatarUrl = item.AvatarUrl,
+                IsApproved = item.IsApproved,
+                CreatedAt = NormalizeToUtc(item.CreatedAt) ?? DateTime.UtcNow
+            });
+        }
+
+        await context.SaveChangesAsync();
+    }
+
     private static async Task SeedStudents(
         AppDbContext context,
         string usersFilePath,
@@ -344,6 +380,15 @@ public static class SeedData
         public int RequiredCount { get; set; }
         public DateTime? Deadline { get; set; }
         public bool IsActive { get; set; }
+    }
+    private sealed class TestimonialMock
+    {
+        public string? Name { get; set; }
+        public string? Role { get; set; }
+        public string? Content { get; set; }
+        public string? AvatarUrl { get; set; }
+        public bool IsApproved { get; set; }
+        public DateTime? CreatedAt { get; set; }
     }
 
     private sealed class UserMock

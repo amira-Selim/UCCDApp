@@ -31,5 +31,197 @@
     "SalaryRange": 6000,
     "TargetFaculty": "Computers and Information",
     "IsApproved": true
-  }
-]
+  },
+  {
+    "Title": "Junior Angular Developer",
+    "CompanyName": "Raya Holding",
+    "CompanyEmail": "jobs@rayacorp.com",
+    "Description": "مطور واجهات أمامية مبتدئ لبناء وتطوير لوحات تحكم وتطبيقات ويب سريعة الاستجابة.",
+    "Requirements": "Angular, TypeScript, JavaScript, HTML5, CSS3, Bootstrap",
+    "Location": "Maadi, Cairo",
+    "SalaryRange": 13000,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  },
+  {
+    "Title": "Data Analyst Intern",
+    "CompanyName": "Orange Egypt",
+    "CompanyEmail": "recruitment@orange.com",
+    "Description": "تدريب في تحليل البيانات واستخراج التقارير لمساعدة الإدارة في اتخاذ القرارات الاستراتيجية.",
+    "Requirements": "Python, Excel, SQL, Power BI, Data Visualization",
+    "Location": "Smart Village, Cairo",
+    "SalaryRange": 5000,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  },
+  {
+    "Title": "Full Stack .NET & Angular Developer",
+    "CompanyName": "Inji Software",
+    "CompanyEmail": "hr@injisoft.com",
+    "Description": "مطور متكامل للعمل على تصميم وتطوير منصات تعليمية وإدارية وضمان تكامل الأنظمة.",
+    "Requirements": "ASP.NET Core Web API, Angular, SQL Server, Git, RESTful APIs",
+    "Location": "Nasr City, Cairo",
+    "SalaryRange": 18000,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  },
+  {
+    "Title": "Machine Learning Engineer Trainee",
+    "CompanyName": "Si-Vision",
+    "CompanyEmail": "careers@si-vision.com",
+    "Description": "فرصة تدريبية لبناء وتدريب نماذج تعلم الآلة والشبكات العصبية لتحليل الصور والبيانات.",
+    "Requirements": "Python, Scikit-Learn, TensorFlow/PyTorch, Data Preprocessing",
+    "Location": "Heliopolis, Cairo",
+    "SalaryRange": 7000,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  },
+  {
+    "Title": "Civil Site Engineer",
+    "CompanyName": "Orascom Construction",
+    "CompanyEmail": "hr@orascom.com",
+    "Description": "مهندس موقع مدني لمتابعة أعمال الحفر والخرسانات والتشطيبات ومطابقتها للمواصفات الفنية.",
+    "Requirements": "BSc in Civil Engineering, AutoCAD, Structural Design basics",
+    "Location": "New Alamein",
+    "SalaryRange": 14000,
+    "TargetFaculty": "Engineering",
+    "IsApproved": true
+  },
+  {
+    "Title": "GIS Specialist",
+    "CompanyName": "Edge Pro for GIS Solutions",
+    "CompanyEmail": "recruitment@edgepro.com",
+    "Description": "أخصائي نظم معلومات جغرافية لإنشاء وإدارة الخرائط الرقمية وتحليل البيانات المكانية والسطحية.",
+    "Requirements": "QGIS, ArcGIS, Spatial Analysis, Coordinate Systems, Python basics",
+    "Location": "Dokki, Giza",
+    "SalaryRange": 11000,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  },
+  {
+    "Title": "DevOps Engineer Intern",
+    "CompanyName": "Fawry",
+    "CompanyEmail": "careers@fawry.com",
+    "Description": "تدريب عملي على إدارة السيرفرات، أتمتة عمليات النشر، والتعامل مع البنية التحتية السحابية.",
+    "Requirements": "Linux, Docker, CI/CD Basics, Git, Cloud Fundamentals",
+    "Location": "Smart Village, Cairo",
+    "SalaryRange": 6500,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  },
+  {
+    "Title": "Cybersecurity Analyst",
+    "CompanyName": "CIB Egypt",
+    "CompanyEmail": "jobs@cibeg.com",
+    "Description": "محلل أمن سيبراني لمراقبة الشبكات وتحليل الثغرات وحماية البيانات المصرفية من الاختراق.",
+    "Requirements": "Network Security, Wireshark, Ethical Hacking Basics, SIEM Tools",
+    "Location": "New Cairo, Cairo",
+    "SalaryRange": 20000,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  },
+  {
+    "Title": "Mechanical Piping Engineer",
+    "CompanyName": "Hassan Allam Holding",
+    "CompanyEmail": "careers@hassanallam.com",
+    "Description": "مهندس ميكانيكا موقع للإشراف على تركيب شبكات الأنابيب وأنظمة مكافحة الحريق والتكييف المركزي.",
+    "Requirements": "BSc in Mechanical Engineering, AutoCAD, HVAC, Piping Design",
+    "Location": "Mostakbal City, Cairo",
+    "SalaryRange": 13500,
+    "TargetFaculty": "Engineering",
+    "IsApproved": true
+  },
+  {
+    "Title": "Junior QC Engineer",
+    "CompanyName": "Elaraby Group",
+    "CompanyEmail": "hr@elarabygroup.com",
+    "Description": "مهندس جودة برمجيات لاختبار الأنظمة الداخلية والمنصات الذكية وتحديد الأخطاء وإعداد التقارير.",
+    "Requirements": "Software Testing Types, Test Cases Design, Bug Tracking Tools (Jira)",
+    "Location": "Benha, Qalyubia",
+    "SalaryRange": 11500,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  },
+  {
+    "Title": "IT Support Specialist",
+    "CompanyName": "Etisalat Egypt",
+    "CompanyEmail": "careers@etisalat.ae",
+    "Description": "تقديم الدعم الفني لحل مشاكل الشبكات، أنظمة التشغيل، وصيانة الأجهزة الداخلية للشركة.",
+    "Requirements": "CCNA, Windows Server, Hardware Troubleshooting, Active Directory",
+    "Location": "Maadi, Cairo",
+    "SalaryRange": 10000,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  },
+  {
+    "Title": "AI & Deep Learning Researcher",
+    "CompanyName": "Valeo Egypt",
+    "CompanyEmail": "valeo-ai@valeo.com",
+    "Description": "باحث ومطور في الذكاء الاصطناعي للعمل على خوارزميات القيادة الذاتية ورؤية الحاسوب.",
+    "Requirements": "Python, CNN, Deep Learning, OpenCV, Data Augmentation",
+    "Location": "Smart Village, Cairo",
+    "SalaryRange": 22000,
+    "TargetFaculty": "Computers and Information",
+    "IsApproved": true
+  },
+  {
+      "Title": "Junior Frontend Developer",
+      "CompanyName": "TechStart Solutions",
+      "CompanyEmail": "careers@techstart.com",
+      "Description": "We are looking for a passionate Junior Frontend Developer to join our web development team. You will build responsive user interfaces using HTML, CSS, JavaScript, and modern frameworks.",
+      "Requirements": "Bachelor's degree in Computer Science or related field. Solid understanding of React or Angular. Knowledge of responsive design and version control (Git).",
+      "Location": "Cairo, Egypt (Hybrid)",
+      "SalaryRange": 12000.00,
+      "TargetFaculty": "Faculty of Computers and Artificial Intelligence",
+      "IsApproved": true,
+      "Deadline": "2026-08-15T23:59:59Z"
+    },
+    {
+      "Title": "Dotnet Backend Engineer",
+      "CompanyName": "Nexus Software House",
+      "CompanyEmail": "hr@nexus-sh.com",
+      "Description": "Join our backend team to develop scalable web applications and APIs. You will be responsible for building high-performance backend systems and integrating with SQL databases.",
+      "Requirements": "Strong knowledge of C#, .NET Core, and ASP.NET Core Web API. Experience with Entity Framework Core and SQL Server. Understanding of RESTful API design principles.",
+      "Location": "Alexandria, Egypt (On-site)",
+      "SalaryRange": 16000.00,
+      "TargetFaculty": "Faculty of Computers and Data Science",
+      "IsApproved": true,
+      "Deadline": "2026-09-01T18:00:00Z"
+    },
+    {
+      "Title": "Marketing Analyst Intern",
+      "CompanyName": "Global Media Marketing",
+      "CompanyEmail": "internships@globalmedia.com",
+      "Description": "We are seeking a data-driven Marketing Analyst Intern to help track, manage, and optimize our digital marketing campaigns and key performance indicators (KPIs).",
+      "Requirements": "Undergraduate student in Commerce, Business Analytics, or Computer Science. Basic knowledge of Google Analytics, Excel, and data visualization tools.",
+      "Location": "Remote",
+      "SalaryRange": 4000.00,
+      "TargetFaculty": "Faculty of Commerce",
+      "IsApproved": true,
+      "Deadline": "2026-07-20T12:00:00Z"
+    },
+    {
+      "Title": "GIS Specialist",
+      "CompanyName": "GeoSpatial Insights",
+      "CompanyEmail": "jobs@geospatial-insights.com",
+      "Description": "Perform spatial data analysis, map production, and database management. The role involves working closely with urban planning and environmental projects.",
+      "Requirements": "Proficiency in QGIS or ArcGIS. Strong understanding of coordinate reference systems (CRS) and spatial analysis methodologies. Experience with spatial databases is a plus.",
+      "Location": "Giza, Egypt (On-site)",
+      "SalaryRange": 14000.00,
+      "TargetFaculty": "Faculty of Arts (GIS Department) / Computers and AI",
+      "IsApproved": true,
+      "Deadline": "2026-10-10T15:00:00Z"
+    },
+    {
+      "Title": "Data Science Associate",
+      "CompanyName": "InnoAI Labs",
+      "CompanyEmail": "talent@innoai.io",
+      "Description": "Assist in building machine learning pipelines, preprocessing complex datasets, and evaluating model performance for commercial deployment.",
+      "Requirements": "Excellent proficiency in Python (Pandas, NumPy, Scikit-Learn). Understanding of deep learning concepts and Convolutional Neural Networks (CNNs). Experience with Kaggle datasets.",
+      "Location": "Cairo, Egypt (Smart Village)",
+      "SalaryRange": 18000.00,
+      "TargetFaculty": "Faculty of Computers and Data Science",
+      "IsApproved": false,
+      "Deadline": "2026-08-30T00:00:00Z"
+    }
+  ]

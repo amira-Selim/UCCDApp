@@ -1,4 +1,4 @@
-﻿using UCCD_App.Extensions;
+using UCCD_App.Extensions;
 using UCCD_App.Context;
 using UCCD_App.Models;
 using Microsoft.AspNetCore.Identity;
@@ -18,11 +18,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-} 
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // 2. الـ Middleware (الترتيب هنا مهم)
 app.UseHttpsRedirection();
@@ -39,7 +36,7 @@ app.MapControllers().RequireCors("AllowAngular");
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try 
+    try
     {
         var context = services.GetRequiredService<AppDbContext>();
         await context.Database.MigrateAsync();
