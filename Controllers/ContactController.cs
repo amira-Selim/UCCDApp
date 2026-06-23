@@ -20,7 +20,7 @@ namespace UCCD_App.Controllers
         }
 
         // POST: api/messages
-        [Authorize(Roles = "User,Student,Admin")]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create(CreateMessageDto dto)
         {

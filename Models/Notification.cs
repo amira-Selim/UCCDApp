@@ -12,6 +12,9 @@ namespace UCCD_App.Models
         [Required]
         public string Message { get; set; }
         public string? UserId { get; set; } // Null if global/admin
+        public string? RecipientEmail { get; set; }
+        public string? RecipientRole { get; set; }
+        public int? RelatedCourseId { get; set; }
         public bool IsRead { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string Type { get; set; } = "Info"; // Info, Success, Warning, Error

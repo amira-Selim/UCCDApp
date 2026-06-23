@@ -36,6 +36,17 @@ namespace UCCD_App.Services
             };
 
             _context.StudentCourses.Add(enrollment);
+
+            var notification = new Notification
+            {
+                Title = "New Enrollment Request",
+                Message = $"{student.FullName} submitted an enrollment request for {course.Name}.",
+                RecipientRole = "Admin",
+                RelatedCourseId = courseId,
+                Type = "Info"
+            };
+            _context.Notifications.Add(notification);
+
             await _context.SaveChangesAsync();
 
             // لو الكورس مدفوع، نوجّه الطالب يروح المركز يدفع ويأكد التسجيل
@@ -102,6 +113,24 @@ namespace UCCD_App.Services
 
             if (dto.Status == StudentStatus.Completed && enrollment.CompletedAt == null)
                 enrollment.CompletedAt = DateTime.UtcNow;
+
+            if (dto.Status == StudentStatus.Aproved || dto.Status == StudentStatus.Rejected)
+            {
+                var student = await _context.Students.FindAsync(dto.StudentId);
+                var course = await _context.Courses.FindAsync(dto.CourseId);
+                
+                string statusWord = dto.Status == StudentStatus.Aproved ? "approved" : "rejected";
+                var notification = new Notification
+                {
+                    Title = $"Enrollment {dto.Status}",
+                    Message = $"Your enrollment in {course?.Name} has been {statusWord}.",
+                    UserId = student?.Id.ToString(),
+                    RecipientEmail = student?.Email,
+                    RelatedCourseId = dto.CourseId,
+                    Type = dto.Status == StudentStatus.Aproved ? "Success" : "Error"
+                };
+                _context.Notifications.Add(notification);
+            }
 
             await _context.SaveChangesAsync();
 

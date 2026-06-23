@@ -20,44 +20,85 @@ namespace UCCD_App.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetNotifications()
+        [HttpGet("my")]
+        public async Task<IActionResult> GetMyNotifications()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var isAdmin = User.IsInRole("Admin");
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+            
             var query = _context.Notifications.AsQueryable();
-            if (!isAdmin)
-            {
-                query = query.Where(n => n.UserId == userId || n.UserId == null);
-            }
+            
+            query = query.Where(n => 
+                n.UserId == userId || 
+                n.RecipientEmail == email || 
+                roles.Contains(n.RecipientRole) || 
+                (roles.Contains("Admin") && n.UserId == null && n.RecipientEmail == null && n.RecipientRole == null)
+            );
+            
             var notifications = await query
                 .OrderByDescending(n => n.CreatedAt)
                 .Take(50)
                 .ToListAsync();
+                
             return Ok(notifications);
         }
 
-        [HttpPost("mark-read/{id}")]
+        [HttpGet("unread-count")]
+        public async Task<IActionResult> GetUnreadCount()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
+            var count = await _context.Notifications.CountAsync(n => 
+                !n.IsRead && 
+                (n.UserId == userId || 
+                 n.RecipientEmail == email || 
+                 roles.Contains(n.RecipientRole) || 
+                 (roles.Contains("Admin") && n.UserId == null && n.RecipientEmail == null && n.RecipientRole == null))
+            );
+
+            return Ok(new { count });
+        }
+
+        [HttpPut("{id}/read")]
         public async Task<IActionResult> MarkAsRead(int id)
         {
             var notification = await _context.Notifications.FindAsync(id);
             if (notification == null) return NotFound(new { message = "Notification not found." });
             
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!User.IsInRole("Admin") && notification.UserId != userId) return Forbid();
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
+            bool isAuthorized = notification.UserId == userId || 
+                                notification.RecipientEmail == email || 
+                                roles.Contains(notification.RecipientRole) || 
+                                roles.Contains("Admin");
+
+            if (!isAuthorized) return Forbid();
 
             notification.IsRead = true;
             await _context.SaveChangesAsync();
             return Ok(new { message = "Notification marked as read." });
         }
         
-        [HttpPost("mark-all-read")]
+        [HttpPut("mark-all-read")]
         public async Task<IActionResult> MarkAllAsRead()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
             var unreadNotifications = await _context.Notifications
-                .Where(n => (n.UserId == userId || (User.IsInRole("Admin") && n.UserId == null)) && !n.IsRead)
+                .Where(n => !n.IsRead && 
+                            (n.UserId == userId || 
+                             n.RecipientEmail == email || 
+                             roles.Contains(n.RecipientRole) || 
+                             (roles.Contains("Admin") && n.UserId == null && n.RecipientEmail == null && n.RecipientRole == null)))
                 .ToListAsync();
+
             foreach(var n in unreadNotifications)
             {
                 n.IsRead = true;
