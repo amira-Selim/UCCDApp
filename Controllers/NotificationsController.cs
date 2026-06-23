@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UCCD_App.Context;
 using UCCD_App.Models;
+using UCCD_App.Dto;
 using System.Security.Claims;
 
 namespace UCCD_App.Controllers
@@ -41,7 +42,7 @@ namespace UCCD_App.Controllers
                 .Take(50)
                 .ToListAsync();
                 
-            return Ok(notifications);
+            return Ok(new ApiResponse<List<Notification>> { Success = true, Data = notifications });
         }
 
         [HttpGet("unread-count")]
@@ -59,7 +60,7 @@ namespace UCCD_App.Controllers
                  (roles.Contains("Admin") && n.UserId == null && n.RecipientEmail == null && n.RecipientRole == null))
             );
 
-            return Ok(new { count });
+            return Ok(new ApiResponse<int> { Success = true, Data = count });
         }
 
         [HttpPut("{id}/read")]
@@ -81,7 +82,7 @@ namespace UCCD_App.Controllers
 
             notification.IsRead = true;
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Notification marked as read." });
+            return Ok(new ApiResponse<string> { Success = true, Message = "Marked as read" });
         }
         
         [HttpPut("mark-all-read")]
@@ -104,7 +105,7 @@ namespace UCCD_App.Controllers
                 n.IsRead = true;
             }
             await _context.SaveChangesAsync();
-            return Ok(new { message = "All notifications marked as read." });
+            return Ok(new ApiResponse<string> { Success = true, Message = "All notifications marked as read." });
         }
     }
 }
