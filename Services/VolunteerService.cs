@@ -15,15 +15,18 @@ public class VolunteerService : IVolunteerService
     private readonly IGenericRepo<VolunteerOpportunity> _opportunityRepo;
     private readonly IGenericRepo<VolunteerApplication> _applicationRepo;
     private readonly AppDbContext _context;
+    private readonly INotificationService _notificationService;
 
     public VolunteerService(
         IGenericRepo<VolunteerOpportunity> opportunityRepo,
         IGenericRepo<VolunteerApplication> applicationRepo,
-        AppDbContext context)
+        AppDbContext context,
+        INotificationService notificationService)
     {
         _opportunityRepo = opportunityRepo;
         _applicationRepo = applicationRepo;
         _context = context;
+        _notificationService = notificationService;
     }
 
     // 1. إنشاء فرصة تطوعية جديدة (ترجع كاملة ببياناتها)
@@ -112,6 +115,7 @@ public class VolunteerService : IVolunteerService
         foreach (var o in opportunities)
         {
             var approvedCount = await _context.VolunteerApplications.CountAsync(a => a.OpportunityId == o.Id && a.Status == VolunteerStatus.Approved);
+            var pendingCount = await _context.VolunteerApplications.CountAsync(a => a.OpportunityId == o.Id && a.Status == VolunteerStatus.Pending);
             result.Add(new VolunteerOpportunityResponseDto
             {
                 Id = o.Id,
@@ -121,7 +125,8 @@ public class VolunteerService : IVolunteerService
                 RequiredCount = o.RequiredCount,
                 Deadline = o.Deadline,
                 IsActive = o.IsActive,
-                CurrentApprovedCount = approvedCount
+                CurrentApprovedCount = approvedCount,
+                PendingApplicantsCount = pendingCount
             });
         }
 
@@ -140,6 +145,7 @@ public class VolunteerService : IVolunteerService
             return new ApiResponse<VolunteerOpportunityResponseDto> { Success = false, Message = "Opportunity not found" };
 
         var approvedCount = await _context.VolunteerApplications.CountAsync(a => a.OpportunityId == o.Id && a.Status == VolunteerStatus.Approved);
+        var pendingCount = await _context.VolunteerApplications.CountAsync(a => a.OpportunityId == o.Id && a.Status == VolunteerStatus.Pending);
 
         var dto = new VolunteerOpportunityResponseDto
         {
@@ -150,7 +156,8 @@ public class VolunteerService : IVolunteerService
             RequiredCount = o.RequiredCount,
             Deadline = o.Deadline,
             IsActive = o.IsActive,
-            CurrentApprovedCount = approvedCount
+            CurrentApprovedCount = approvedCount,
+            PendingApplicantsCount = pendingCount
         };
 
         return new ApiResponse<VolunteerOpportunityResponseDto> { Success = true, Data = dto };
@@ -186,6 +193,16 @@ public class VolunteerService : IVolunteerService
 
         await _applicationRepo.AddAsync(application);
 
+        // Send notification to Admin
+        await _notificationService.CreateNotificationAsync(
+            "New Volunteer Application",
+            $"Student {student.FullName} applied for volunteer opportunity: {opportunity.Title}.",
+            "VolunteerApplication",
+            null,
+            null,
+            opportunityId
+        );
+
         var responseDto = new VolunteerApplicationResponseDto
         {
             Id = application.Id,
@@ -205,6 +222,33 @@ public class VolunteerService : IVolunteerService
             Success = true, 
             Message = "Application submitted successfully", 
             Data = responseDto 
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<VolunteerApplicationResponseDto>>> GetApplicationsByStudentIdAsync(int studentId)
+    {
+        var applications = await _context.VolunteerApplications
+            .Include(a => a.Opportunity)
+            .Include(a => a.Student)
+            .Where(a => a.StudentId == studentId)
+            .Select(a => new VolunteerApplicationResponseDto
+            {
+                Id = a.Id,
+                OpportunityId = a.OpportunityId,
+                OpportunityTitle = a.Opportunity != null ? a.Opportunity.Title : "",
+                StudentId = a.StudentId,
+                StudentFullName = a.Student != null ? a.Student.FullName : "",
+                StudentEmail = a.Student != null ? a.Student.Email : "",
+                Motivation = a.Motivation,
+                Skills = a.Skills,
+                Status = a.Status.ToString(),
+                AppliedAt = a.AppliedAt
+            }).ToListAsync();
+
+        return new ApiResponse<IEnumerable<VolunteerApplicationResponseDto>> 
+        { 
+            Success = true, 
+            Data = applications 
         };
     }
 
@@ -289,6 +333,21 @@ public class VolunteerService : IVolunteerService
         application.Status = newStatus;
         _applicationRepo.Update(application);
 
+        var appUser = application.Student != null ? await _context.Users.FirstOrDefaultAsync(u => u.Email == application.Student.Email) : null;
+        if (appUser != null && (newStatus == VolunteerStatus.Approved || newStatus == VolunteerStatus.Rejected))
+        {
+            string statusWord = newStatus == VolunteerStatus.Approved ? "approved" : "rejected";
+            string typeStr = newStatus == VolunteerStatus.Approved ? "Success" : "Error";
+            
+            await _notificationService.CreateNotificationAsync(
+                $"Volunteer Application {newStatus}",
+                $"Your application for {application.Opportunity?.Title} has been {statusWord}.",
+                typeStr,
+                appUser.Id,
+                null
+            );
+        }
+
         var responseDto = new VolunteerApplicationResponseDto
         {
             Id = application.Id,
@@ -309,5 +368,38 @@ public class VolunteerService : IVolunteerService
             Message = $"Application status updated to {dto.NewStatus} successfully", 
             Data = responseDto 
         };
+    }
+
+    public async Task<ApiResponse<string>> CancelApplicationAsync(string email, int applicationId)
+    {
+        var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == email);
+        if (student == null) return new ApiResponse<string> { Success = false, Message = "Student not found." };
+
+        var application = await _context.VolunteerApplications
+            .Include(a => a.Opportunity)
+            .FirstOrDefaultAsync(a => a.StudentId == student.Id && a.Id == applicationId);
+
+        if (application == null)
+            return new ApiResponse<string> { Success = false, Message = "Application not found." };
+
+        if (application.Status == VolunteerStatus.Approved || application.Status == VolunteerStatus.Completed)
+            return new ApiResponse<string> { Success = false, Message = "لا يمكنك إلغاء أو حذف طلب تم قبوله أو إكماله." };
+
+        var oppTitle = application.Opportunity?.Title ?? "a volunteer opportunity";
+
+        _context.VolunteerApplications.Remove(application);
+        await _context.SaveChangesAsync();
+
+        await _notificationService.CreateNotificationAsync(
+            "Application Cancelled",
+            $"Student {student.FullName} has cancelled their volunteer application for {oppTitle}.",
+            "Warning",
+            null, // Admin
+            null,
+            application.OpportunityId,
+            null
+        );
+
+        return new ApiResponse<string> { Success = true, Message = "تم إزالة الطلب بنجاح." };
     }
 }

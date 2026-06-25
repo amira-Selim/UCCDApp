@@ -357,14 +357,27 @@ public async Task<ApiResponse<string>> CancelApplicationAsync(string email, int 
     if (student == null) return new ApiResponse<string> { Success = false, Message = "Student not found." };
 
     var application = await _context.JobApplications
+        .Include(a => a.JobOpportunity)
         .FirstOrDefaultAsync(a => a.StudentId == student.Id && a.Id == applicationId);
 
     if (application == null)
         return new ApiResponse<string> { Success = false, Message = "Application not found." };
 
+    var jobTitle = application.JobOpportunity?.Title ?? "a job";
+
     // JobApplications don't currently have a Status field, so we just allow them to cancel.
     _context.JobApplications.Remove(application);
     await _context.SaveChangesAsync();
+
+    await _notificationService.CreateNotificationAsync(
+        "Application Cancelled",
+        $"Student {student.FullName} has cancelled their application for {jobTitle}.",
+        "Warning",
+        null, // Admin
+        null,
+        null,
+        application.JobOpportunityId
+    );
 
     return new ApiResponse<string> { Success = true, Message = "تم إزالة الطلب بنجاح." };
 }

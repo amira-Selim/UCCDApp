@@ -8,7 +8,13 @@ namespace UCCD_App.Services
     public class StudentCourseService : IStudentCourseService
     {
         private readonly AppDbContext _context;
-        public StudentCourseService(AppDbContext context) => _context = context;
+        private readonly INotificationService _notificationService;
+
+        public StudentCourseService(AppDbContext context, INotificationService notificationService)
+        {
+            _context = context;
+            _notificationService = notificationService;
+        }
 
         public async Task<ApiResponse<EnrollmentResponseDto>> EnrollByEmailAsync(string email, int courseId)
         {
@@ -37,17 +43,19 @@ namespace UCCD_App.Services
 
             _context.StudentCourses.Add(enrollment);
 
-            var notification = new Notification
-            {
-                Title = "New Enrollment Request",
-                Message = $"{student.FullName} submitted an enrollment request for {course.Name}.",
-                RecipientRole = "Admin",
-                RelatedCourseId = courseId,
-                Type = "Info"
-            };
-            _context.Notifications.Add(notification);
+            // We will use INotificationService after SaveChangesAsync to ensure course exists and signalr triggers
+            // _context.Notifications.Add(notification); // Removed direct add
 
             await _context.SaveChangesAsync();
+
+            // Real-time notification to Admins
+            await _notificationService.CreateNotificationAsync(
+                "New Enrollment Request",
+                $"{student.FullName} submitted an enrollment request for {course.Name}.",
+                "Info",
+                null,
+                courseId
+            );
 
             // لو الكورس مدفوع، نوجّه الطالب يروح المركز يدفع ويأكد التسجيل
             var message = course.Price > 0
@@ -119,20 +127,38 @@ namespace UCCD_App.Services
                 var student = await _context.Students.FindAsync(dto.StudentId);
                 var course = await _context.Courses.FindAsync(dto.CourseId);
                 
+                // Get ApplicationUser to use correct string GUID for UserId instead of student's int Id
+                var appUser = student != null ? await _context.Users.FirstOrDefaultAsync(u => u.Email == student.Email) : null;
+                
                 string statusWord = dto.Status == StudentStatus.Aproved ? "approved" : "rejected";
-                var notification = new Notification
-                {
-                    Title = $"Enrollment {dto.Status}",
-                    Message = $"Your enrollment in {course?.Name} has been {statusWord}.",
-                    UserId = student?.Id.ToString(),
-                    RecipientEmail = student?.Email,
-                    RelatedCourseId = dto.CourseId,
-                    Type = dto.Status == StudentStatus.Aproved ? "Success" : "Error"
-                };
-                _context.Notifications.Add(notification);
+                string typeStr = dto.Status == StudentStatus.Aproved ? "Success" : "Error";
+                // We'll call INotificationService after SaveChanges
             }
 
             await _context.SaveChangesAsync();
+
+            if (dto.Status == StudentStatus.Aproved || dto.Status == StudentStatus.Rejected || dto.Status == StudentStatus.Completed)
+            {
+                var student = await _context.Students.FindAsync(dto.StudentId);
+                var course = await _context.Courses.FindAsync(dto.CourseId);
+                var appUser = student != null ? await _context.Users.FirstOrDefaultAsync(u => u.Email == student.Email) : null;
+                
+                string statusWord = dto.Status == StudentStatus.Aproved ? "approved" 
+                                  : dto.Status == StudentStatus.Completed ? "marked as completed" 
+                                  : "rejected";
+                string typeStr = (dto.Status == StudentStatus.Aproved || dto.Status == StudentStatus.Completed) ? "Success" : "Error";
+                
+                if (appUser != null)
+                {
+                    await _notificationService.CreateNotificationAsync(
+                        $"Course {dto.Status}",
+                        $"Your enrollment in {course?.Name} has been {statusWord}.",
+                        typeStr,
+                        appUser.Id,
+                        dto.CourseId
+                    );
+                }
+            }
 
             return new ApiResponse<string> { Success = true, Message = "تم تحديث حالة الطالب بنجاح" };
         }
@@ -170,6 +196,39 @@ namespace UCCD_App.Services
                     Status = sc.StudentStatus.ToString()
                 })
                 .ToListAsync();
+        }
+
+        public async Task<ApiResponse<string>> CancelEnrollmentAsync(string email, int courseId)
+        {
+            var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == email);
+            if (student == null) return new ApiResponse<string> { Success = false, Message = "Student not found." };
+
+            var enrollment = await _context.StudentCourses
+                .Include(sc => sc.Course)
+                .FirstOrDefaultAsync(sc => sc.StudentId == student.Id && sc.CouresId == courseId);
+
+            if (enrollment == null)
+                return new ApiResponse<string> { Success = false, Message = "Enrollment not found." };
+
+            if (enrollment.StudentStatus == StudentStatus.Aproved || enrollment.StudentStatus == StudentStatus.Completed)
+                return new ApiResponse<string> { Success = false, Message = "لا يمكنك إلغاء أو حذف طلب تم قبوله أو إكماله." };
+
+            var courseName = enrollment.Course?.Name ?? "a course";
+
+            _context.StudentCourses.Remove(enrollment);
+            await _context.SaveChangesAsync();
+
+            await _notificationService.CreateNotificationAsync(
+                "Enrollment Cancelled",
+                $"Student {student.FullName} has cancelled their enrollment in {courseName}.",
+                "Warning",
+                null, // Admin
+                courseId,
+                null,
+                null
+            );
+
+            return new ApiResponse<string> { Success = true, Message = "تم إزالة الطلب بنجاح." };
         }
     }
 }
