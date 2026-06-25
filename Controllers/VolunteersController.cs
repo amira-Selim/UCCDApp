@@ -66,6 +66,18 @@ public class VolunteersController : ControllerBase
         return response.Success ? Ok(response) : BadRequest(response);
     }
 
+    [Authorize(Roles = "Student")]
+    [HttpDelete("applications/{applicationId}/cancel")]
+    public async Task<IActionResult> CancelApplication(int applicationId)
+    {
+        var studentEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(studentEmail))
+            return Unauthorized(new ApiResponse<object> { Success = false, Message = "User email not found in token." });
+
+        var response = await _volunteerService.CancelApplicationAsync(studentEmail, applicationId);
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
+
     // ==========================================
     // 🛠️ ألوية الأدمن (Admin Endpoints)
     // ==========================================

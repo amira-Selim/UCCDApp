@@ -10,6 +10,7 @@ public class JobApplication : BaseEntity
     
     public DateTime AppliedAt { get; set; } = DateTime.UtcNow;
     public string? CvFilePath { get; set; } // ملف الـ CV المرفوع خصيصاً للوظيفة دي (اختياري)
+    public string? CoverLetter { get; set; }
 
     [ForeignKey("JobOpportunityId")]
     public virtual JobOpportunity? JobOpportunity { get; set; }

@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddApplicationServices(builder.Configuration); // بتنادي على ملف الـ App Services
 builder.Services.AddIdentityServices(builder.Configuration);    // بتنادي على ملف الـ Identity
-builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddSignalR(); // Add SignalR
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -23,6 +23,7 @@ app.UseSwaggerUI();
 
 // 2. الـ Middleware (الترتيب هنا مهم)
 app.UseHttpsRedirection();
+app.UseStaticFiles(); // Added for CV file uploads
 app.UseRouting();
 
 app.UseCors("AllowAngular");
@@ -31,6 +32,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers().RequireCors("AllowAngular");
+app.MapHub<UCCD_App.Hubs.NotificationHub>("/hubs/notifications").RequireCors("AllowAngular");
 
 // 3. الـ Seed Data (خليناها برضه منظمة)
 using (var scope = app.Services.CreateScope())

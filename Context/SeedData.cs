@@ -141,7 +141,14 @@ public static class SeedData
 
             if (!Enum.TryParse(item.Type, true, out Models.Type courseType))
             {
-                courseType = Models.Type.Training;
+                if (string.Equals(item.Type, "Workshop", StringComparison.OrdinalIgnoreCase))
+                {
+                    courseType = Models.Type.WorksShop;
+                }
+                else
+                {
+                    courseType = Models.Type.Training;
+                }
             }
 
             context.Courses.Add(new Course
@@ -225,6 +232,7 @@ public static class SeedData
                 Requirements = item.Requirements ?? string.Empty,
                 Location = item.Location ?? string.Empty,
                 SalaryRange = item.SalaryRange,
+                Type = Enum.TryParse<JobType>(item.Type, true, out var t) ? t : JobType.FullTime,
                 TargetFaculty = item.TargetFaculty ?? string.Empty,
                 IsApproved = item.IsApproved,
                 CreatedAt = DateTime.UtcNow,
@@ -367,6 +375,7 @@ public static class SeedData
         public string? Requirements { get; set; }
         public string? Location { get; set; }
         public decimal? SalaryRange { get; set; }
+        public string? Type { get; set; }
         public string? TargetFaculty { get; set; }
         public bool IsApproved { get; set; }
         public DateTime? Deadline { get; set; }

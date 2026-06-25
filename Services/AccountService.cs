@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
 using UCCD_App.Dto;
 using UCCD_App.Models;
 using UCCD_App.Repo;
@@ -10,12 +12,14 @@ namespace UCCD_App.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IGenericRepo<Student> _studentRepo;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public AccountService(UserManager<ApplicationUser> userManager, IGenericRepo<Student> studentRepo, IConfiguration configuration)
+        public AccountService(UserManager<ApplicationUser> userManager, IGenericRepo<Student> studentRepo, IConfiguration configuration, IEmailService emailService)
         {
             _userManager = userManager;
             _studentRepo = studentRepo;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         public async Task<ApiResponse<UserTokenResponseDto>> LoginAsync(LoginDto loginDto)
@@ -93,6 +97,47 @@ namespace UCCD_App.Services
 
             var newToken = await TokenService.GenerateTokenAsync(user, _userManager, _configuration);
             return new ApiResponse<UserTokenResponseDto> { Success = true, Data = new UserTokenResponseDto { FullName = user.FullName, Email = user.Email!, Token = newToken } };
+        }
+
+        public async Task<ApiResponse<bool>> ForgotPasswordAsync(ForgotPasswordDto dto)
+        {
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user == null)
+            {
+                // Prevent Email Enumeration: Always return success even if not found
+                return new ApiResponse<bool> { Success = true, Message = "If the email is registered, you will receive a reset password link." };
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var frontendUrl = _configuration["FrontendUrl"] ?? "http://localhost:4200";
+            var resetLink = $"{frontendUrl}/auth/reset-password?email={user.Email}&token={encodedToken}";
+            var body = $"Please reset your password by clicking here: <a href='{resetLink}'>Reset Password</a>";
+            
+            await _emailService.SendEmailToUserAsync(user.Email!, "Reset Password", body);
+
+            return new ApiResponse<bool> { Success = true, Message = "If the email is registered, you will receive a reset password link." };
+        }
+
+        public async Task<ApiResponse<bool>> ResetPasswordAsync(ResetPasswordDto dto)
+        {
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user == null)
+            {
+                return new ApiResponse<bool> { Success = false, Message = "Invalid request." };
+            }
+
+            var decodedTokenBytes = WebEncoders.Base64UrlDecode(dto.Token);
+            var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
+
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, dto.NewPassword);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return new ApiResponse<bool> { Success = false, Message = errors };
+            }
+
+            return new ApiResponse<bool> { Success = true, Message = "Password has been reset successfully." };
         }
     }
 }

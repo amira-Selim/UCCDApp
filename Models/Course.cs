@@ -1,4 +1,4 @@
-﻿namespace UCCD_App.Models;
+namespace UCCD_App.Models;
 
 public class Course : BaseEntity
 {

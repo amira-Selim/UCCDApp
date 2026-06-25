@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UCCD_App.Context;
 
@@ -11,9 +12,11 @@ using UCCD_App.Context;
 namespace UCCD_App.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260624181653_VaryJobTypes")]
+    partial class VaryJobTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,9 +289,6 @@ namespace UCCD_App.Migrations
                     b.Property<DateTime>("AppliedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CoverLetter")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CvFilePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -431,12 +431,6 @@ namespace UCCD_App.Migrations
                     b.Property<int?>("RelatedCourseId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RelatedJobId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RelatedVolunteerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -449,12 +443,6 @@ namespace UCCD_App.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RelatedCourseId");
-
-                    b.HasIndex("RelatedJobId");
-
-                    b.HasIndex("RelatedVolunteerId");
 
                     b.ToTable("Notifications");
                 });
@@ -738,30 +726,6 @@ namespace UCCD_App.Migrations
                     b.Navigation("JobOpportunity");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("UCCD_App.Models.Notification", b =>
-                {
-                    b.HasOne("UCCD_App.Models.Course", "RelatedCourse")
-                        .WithMany()
-                        .HasForeignKey("RelatedCourseId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("UCCD_App.Models.JobOpportunity", "RelatedJob")
-                        .WithMany()
-                        .HasForeignKey("RelatedJobId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("UCCD_App.Models.VolunteerOpportunity", "RelatedVolunteer")
-                        .WithMany()
-                        .HasForeignKey("RelatedVolunteerId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("RelatedCourse");
-
-                    b.Navigation("RelatedJob");
-
-                    b.Navigation("RelatedVolunteer");
                 });
 
             modelBuilder.Entity("UCCD_App.Models.StudentCourse", b =>

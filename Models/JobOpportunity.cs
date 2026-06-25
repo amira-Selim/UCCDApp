@@ -12,6 +12,7 @@ public class JobOpportunity : BaseEntity
     public string Requirements { get; set; } = "";   // الشروط والمهارات المطلوبة
     public string Location { get; set; } = "";       // مكان العمل (Cairo, Remote...)
     public decimal? SalaryRange { get; set; }        // الراتب (اختياري)
+    public JobType Type { get; set; }                // نوع الوظيفة
     public string TargetFaculty { get; set; } = "";  // الكلية المستهدفة للفلترة (مثل: Computers and Information)
     
     public bool IsApproved { get; set; } = false;    // موافقة الأدمن لظهور الوظيفة

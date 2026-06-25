@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UCCD_App.Dto;
 using UCCD_App.Services;
@@ -36,6 +36,26 @@ public class StudentsController : ControllerBase
             return NotFound(result);
         }
 
+        return Ok(result);
+    }
+
+    [HttpGet("{id}/jobs")]
+    public async Task<IActionResult> GetStudentJobs(int id, [FromServices] IJobBoardService jobService)
+    {
+        var result = await jobService.GetApplicationsByStudentIdAsync(id);
+        if (!result.Success)
+            return BadRequest(result);
+            
+        return Ok(result);
+    }
+
+    [HttpGet("{id}/volunteers")]
+    public async Task<IActionResult> GetStudentVolunteers(int id, [FromServices] IVolunteerService volunteerService)
+    {
+        var result = await volunteerService.GetApplicationsByStudentIdAsync(id);
+        if (!result.Success)
+            return BadRequest(result);
+            
         return Ok(result);
     }
 }

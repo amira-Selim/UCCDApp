@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UCCD_App.Dto;
@@ -70,6 +70,18 @@ namespace UCCD_App.Controllers
             var result = await _service.GetCoursesForStudentAsync(studentId);
             return Ok(new ApiResponse<List<StudentRegisteredCourseDto>> { Success = true, Data = result });
         }
+
+        [Authorize(Roles = "Student")]
+        [HttpDelete("cancel/{courseId}")]
+        public async Task<IActionResult> CancelEnrollment(int courseId)
+        {
+            if (string.IsNullOrEmpty(UserEmail)) return Unauthorized();
+
+            var result = await _service.CancelEnrollmentAsync(UserEmail, courseId);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
 
 
     }

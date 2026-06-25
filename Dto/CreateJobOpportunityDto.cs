@@ -27,6 +27,9 @@ public class CreateJobOpportunityDto
     public decimal? SalaryRange { get; set; }
 
     [Required]
+    public string Type { get; set; } = "";
+
+    [Required]
     public string TargetFaculty { get; set; } = ""; // الكلية المستهدفة
 
     public DateTime? Deadline { get; set; }

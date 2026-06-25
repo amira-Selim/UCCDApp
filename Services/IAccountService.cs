@@ -8,5 +8,7 @@ namespace UCCD_App.Services
         Task<ApiResponse<UserTokenResponseDto>> LoginAsync(LoginDto loginDto);
         Task<ApiResponse<UserTokenResponseDto>> RegisterAsync(RegisterDto registerDto);
         Task<ApiResponse<UserTokenResponseDto>> CompleteProfileAsync(string email, CompleteProfileDto dto);
+        Task<ApiResponse<bool>> ForgotPasswordAsync(ForgotPasswordDto dto);
+        Task<ApiResponse<bool>> ResetPasswordAsync(ResetPasswordDto dto);
     }
 }

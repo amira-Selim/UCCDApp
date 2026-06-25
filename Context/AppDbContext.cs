@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -70,12 +70,12 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
         // الـ Fluent API الجديد الخاص بالمتطوعين (الخطوة التانية اللي تهمنا)
         // ==========================================
 
-        // تحويل الـ Enum لـ string عشان يتسيف في الداتا بيز صح زي الـ StudentStatus
+        // تحويل الـ Enum لـ string عشان يتسيف في الداتا بيز 
         modelBuilder.Entity<VolunteerApplication>()
-            .Property(va => va.Status)
+            .Property(a => a.Status)
             .HasConversion(
-                s => s.ToString(),
-                s => (VolunteerStatus)Enum.Parse(typeof(VolunteerStatus), s));
+                st => st.ToString(),
+                st => (VolunteerStatus)Enum.Parse(typeof(VolunteerStatus), st));
 
         // تفعيل الـ Cascade Delete (لو الفرصة اتمسحت، طلباتها تتمسح تلقائياً)
         modelBuilder.Entity<VolunteerApplication>()
@@ -83,6 +83,25 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(o => o.Applications)
             .HasForeignKey(a => a.OpportunityId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Notifications - Cascade Delete Handlers
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.RelatedCourse)
+            .WithMany()
+            .HasForeignKey(n => n.RelatedCourseId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.RelatedVolunteer)
+            .WithMany()
+            .HasForeignKey(n => n.RelatedVolunteerId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.RelatedJob)
+            .WithMany()
+            .HasForeignKey(n => n.RelatedJobId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         base.OnModelCreating(modelBuilder);
     }

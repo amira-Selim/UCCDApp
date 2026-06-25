@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UCCD_App.Dto;
@@ -41,6 +41,22 @@ namespace UCCD_App.Controllers
             if (string.IsNullOrEmpty(email)) return Unauthorized();
 
             var result = await _accountService.CompleteProfileAsync(email, dto);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
+        {
+            var result = await _accountService.ForgotPasswordAsync(dto);
+            // Always return Ok to prevent email enumeration, but you could check result.Success if you wanted to.
+            return Ok(result);
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+        {
+            var result = await _accountService.ResetPasswordAsync(dto);
             if (!result.Success) return BadRequest(result);
             return Ok(result);
         }

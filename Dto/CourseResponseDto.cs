@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using UCCD_App.Models;
 
 namespace UCCD_App.Dto;
@@ -20,4 +20,5 @@ public class CourseResponseDto
     [Required]
     public string Type { get; set; } = "";
     public string? Instructor { get; set; }
+    public int PendingCount { get; set; } // الفيتشر الجديدة
 }

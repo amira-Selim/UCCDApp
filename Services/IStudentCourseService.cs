@@ -18,5 +18,8 @@ namespace UCCD_App.Services
 
         // ميثود عرض الكورسات اللي طالب معين مسجل فيها بالـ ID (للأدمن) - Student Details page
         Task<List<StudentRegisteredCourseDto>> GetCoursesForStudentAsync(int studentId);
+
+        // إلغاء التسجيل (للطالب)
+        Task<ApiResponse<string>> CancelEnrollmentAsync(string email, int courseId);
     }
 }

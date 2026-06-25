@@ -8,11 +8,13 @@ namespace UCCD_App.Services
     {
         private readonly IMessageRepository _repo;
         private readonly IEmailService _emailService;
+        private readonly INotificationService _notificationService;
 
-        public MessageService(IMessageRepository repo, IEmailService emailService)
+        public MessageService(IMessageRepository repo, IEmailService emailService, INotificationService notificationService)
         {
             _repo = repo;
             _emailService = emailService;
+            _notificationService = notificationService;
         }
 
         public async Task<MessageResponseDto> CreateAsync(CreateMessageDto dto)
@@ -39,6 +41,14 @@ namespace UCCD_App.Services
             await _emailService.SendEmailAsync(
                 $"New Message - {dto.IssueType}",
                 body
+            );
+
+            // Create Notification for Admin (userId = null goes to all Admins based on controller logic)
+            await _notificationService.CreateNotificationAsync(
+                "New Contact Message", 
+                $"You have received a new message from {dto.Name} regarding {dto.IssueType}.", 
+                "Message", 
+                null
             );
 
             return new MessageResponseDto

@@ -12,6 +12,7 @@ public class JobOpportunityResponseDto
     public string Requirements { get; set; } = "";
     public string Location { get; set; } = "";
     public decimal? SalaryRange { get; set; }
+    public string Type { get; set; } = "";
     public string TargetFaculty { get; set; } = "";
     public bool IsApproved { get; set; }
     public DateTime CreatedAt { get; set; }

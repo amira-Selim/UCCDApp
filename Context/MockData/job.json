@@ -8,6 +8,7 @@
     "Location": "Smart Village, Cairo",
     "SalaryRange": 16000,
     "TargetFaculty": "Computers and Information",
+    "Type": "FullTime",
     "IsApproved": true
   },
   {
@@ -19,6 +20,7 @@
     "Location": "New Capital, Cairo",
     "SalaryRange": 12000,
     "TargetFaculty": "Engineering",
+    "Type": "FullTime",
     "IsApproved": true
   },
   {
@@ -30,6 +32,7 @@
     "Location": "Remote",
     "SalaryRange": 6000,
     "TargetFaculty": "Computers and Information",
+    "Type": "Internship",
     "IsApproved": true
   },
   {
@@ -41,6 +44,7 @@
     "Location": "Maadi, Cairo",
     "SalaryRange": 13000,
     "TargetFaculty": "Computers and Information",
+    "Type": "FullTime",
     "IsApproved": true
   },
   {
@@ -52,6 +56,7 @@
     "Location": "Smart Village, Cairo",
     "SalaryRange": 5000,
     "TargetFaculty": "Computers and Information",
+    "Type": "Internship",
     "IsApproved": true
   },
   {
@@ -63,6 +68,7 @@
     "Location": "Nasr City, Cairo",
     "SalaryRange": 18000,
     "TargetFaculty": "Computers and Information",
+    "Type": "FullTime",
     "IsApproved": true
   },
   {
@@ -74,6 +80,7 @@
     "Location": "Heliopolis, Cairo",
     "SalaryRange": 7000,
     "TargetFaculty": "Computers and Information",
+    "Type": "Internship",
     "IsApproved": true
   },
   {
@@ -85,6 +92,7 @@
     "Location": "New Alamein",
     "SalaryRange": 14000,
     "TargetFaculty": "Engineering",
+    "Type": "FullTime",
     "IsApproved": true
   },
   {
@@ -96,6 +104,7 @@
     "Location": "Dokki, Giza",
     "SalaryRange": 11000,
     "TargetFaculty": "Computers and Information",
+    "Type": "FullTime",
     "IsApproved": true
   },
   {
@@ -107,6 +116,7 @@
     "Location": "Smart Village, Cairo",
     "SalaryRange": 6500,
     "TargetFaculty": "Computers and Information",
+    "Type": "Internship",
     "IsApproved": true
   },
   {
@@ -118,6 +128,7 @@
     "Location": "New Cairo, Cairo",
     "SalaryRange": 20000,
     "TargetFaculty": "Computers and Information",
+    "Type": "FullTime",
     "IsApproved": true
   },
   {
@@ -129,6 +140,7 @@
     "Location": "Mostakbal City, Cairo",
     "SalaryRange": 13500,
     "TargetFaculty": "Engineering",
+    "Type": "FullTime",
     "IsApproved": true
   },
   {
@@ -140,6 +152,7 @@
     "Location": "Benha, Qalyubia",
     "SalaryRange": 11500,
     "TargetFaculty": "Computers and Information",
+    "Type": "FullTime",
     "IsApproved": true
   },
   {
@@ -151,6 +164,7 @@
     "Location": "Maadi, Cairo",
     "SalaryRange": 10000,
     "TargetFaculty": "Computers and Information",
+    "Type": "FullTime",
     "IsApproved": true
   },
   {
@@ -162,6 +176,7 @@
     "Location": "Smart Village, Cairo",
     "SalaryRange": 22000,
     "TargetFaculty": "Computers and Information",
+    "Type": "FullTime",
     "IsApproved": true
   },
   {
@@ -173,6 +188,7 @@
       "Location": "Cairo, Egypt (Hybrid)",
       "SalaryRange": 12000.00,
       "TargetFaculty": "Faculty of Computers and Artificial Intelligence",
+      "Type": "FullTime",
       "IsApproved": true,
       "Deadline": "2026-08-15T23:59:59Z"
     },
@@ -185,6 +201,7 @@
       "Location": "Alexandria, Egypt (On-site)",
       "SalaryRange": 16000.00,
       "TargetFaculty": "Faculty of Computers and Data Science",
+      "Type": "FullTime",
       "IsApproved": true,
       "Deadline": "2026-09-01T18:00:00Z"
     },
@@ -197,6 +214,7 @@
       "Location": "Remote",
       "SalaryRange": 4000.00,
       "TargetFaculty": "Faculty of Commerce",
+      "Type": "Internship",
       "IsApproved": true,
       "Deadline": "2026-07-20T12:00:00Z"
     },
@@ -209,6 +227,7 @@
       "Location": "Giza, Egypt (On-site)",
       "SalaryRange": 14000.00,
       "TargetFaculty": "Faculty of Arts (GIS Department) / Computers and AI",
+      "Type": "FullTime",
       "IsApproved": true,
       "Deadline": "2026-10-10T15:00:00Z"
     },
@@ -221,6 +240,7 @@
       "Location": "Cairo, Egypt (Smart Village)",
       "SalaryRange": 18000.00,
       "TargetFaculty": "Faculty of Computers and Data Science",
+      "Type": "FullTime",
       "IsApproved": false,
       "Deadline": "2026-08-30T00:00:00Z"
     }

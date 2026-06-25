@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using UCCD_App.Dto;
-using UCCD_App.Models;
-using UCCD_App.Repo;
+using UCCD_App.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
-using Type = UCCD_App.Models.Type;
+using System.Collections.Generic;
 
 namespace UCCD_App.Controllers;
 
@@ -12,141 +11,55 @@ namespace UCCD_App.Controllers;
 [ApiController]
 public class CoursesController : ControllerBase
 {
-    private readonly IGenericRepo<Course> courseRepo;
+    private readonly ICourseService _courseService;
 
-    public CoursesController(IGenericRepo<Course> courseRepo)
+    public CoursesController(ICourseService courseService)
     {
-        this.courseRepo = courseRepo;
+        _courseService = courseService;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CourseResponseDto>>> GetAll()
     {
-        var courses = await courseRepo.GetAllAsync();
-
-        return Ok(courses.Select(c => new CourseResponseDto
-        {
-            Id = c.Id,
-            Name = c.Name,
-            Capacity = c.Capacity,
-            CertificationFee = c.CertificationFee,
-            Duration = c.Duration,
-            Price = c.Price,
-            StartDate = c.StartDate,
-            Type = c.Type.ToString(),
-            Instructor = c.Instructor,
-        }));
+        var courses = await _courseService.GetAllCoursesAsync();
+        return Ok(courses);
     }
 
     // ✅ GET /api/courses/5
     [HttpGet("{id:int}")]
     public async Task<ActionResult<CourseResponseDto>> GetByID(int id)
     {
-        var course = await courseRepo.GetByIdAsync(id);
+        var course = await _courseService.GetCourseByIdAsync(id);
         if (course == null)
             return NotFound();
 
-        // رجّعي DTO مش الـ entity
-        return Ok(new CourseResponseDto
-        {
-            Id = course.Id,
-            Name = course.Name,
-            Capacity = course.Capacity,
-            CertificationFee = course.CertificationFee,
-            Duration = course.Duration,
-            Price = course.Price,
-            StartDate = course.StartDate,
-            Type = course.Type.ToString(),
-            Instructor = course.Instructor,
-        });
+        return Ok(course);
     }
 
     // ✅ POST /api/courses
-    // ✅ يرجّع response فيه Id
     [HttpPost, Authorize(Roles = "Admin")]
     public async Task<ActionResult<CourseResponseDto>> Create(CreateCourseDto courseDto)
     {
-        var course = new Course
-        {
-            Name = courseDto.Name,
-            Capacity = courseDto.Capacity,
-            CertificationFee = courseDto.CertificationFee,
-            Duration = courseDto.Duration,
-            Price = courseDto.Price,
-            StartDate = courseDto.StartDate.HasValue
-                ? NormalizeToUtc(courseDto.StartDate.Value)
-                : null,
-            Type = (Type)Enum.Parse(typeof(Type), courseDto.Type, true),
-            Instructor = courseDto.Instructor
-        };
-
-        await courseRepo.AddAsync(course);
-
-        var response = new CourseResponseDto
-        {
-            Id = course.Id, // ✅ هنا الـ ID بعد الإضافة
-            Name = course.Name,
-            Capacity = course.Capacity,
-            CertificationFee = course.CertificationFee,
-            Duration = course.Duration,
-            Price = course.Price,
-            StartDate = course.StartDate,
-            Type = course.Type.ToString(),
-            Instructor = course.Instructor,
-        };
-
-        // ✅ الأفضل: 201 Created + Location Header
-        return CreatedAtAction(nameof(GetByID), new { id = course.Id }, response);
+        var response = await _courseService.CreateCourseAsync(courseDto);
+        return CreatedAtAction(nameof(GetByID), new { id = response.Id }, response);
     }
 
-    // ✅ PUT /api/courses/5  (id في endpoint)
+    // ✅ PUT /api/courses/5
     [HttpPut("{id:int}"), Authorize(Roles = "Admin")]
     public async Task<ActionResult<CourseResponseDto>> Update(int id, UpdateCourseDto courseDto)
     {
-        var course = await courseRepo.GetByIdAsync(id);
-        if (course == null)
+        var response = await _courseService.UpdateCourseAsync(id, courseDto);
+        if (response == null)
             return NotFound();
 
-        course.Name = courseDto.Name;
-        course.Capacity = courseDto.Capacity;
-        course.CertificationFee = courseDto.CertificationFee;
-        course.Duration = courseDto.Duration;
-        course.Price = courseDto.Price;
-        course.StartDate = NormalizeToUtc(courseDto.StartDate);
-        course.Type = (Type)Enum.Parse(typeof(Type), courseDto.Type, true);
-        course.Instructor = courseDto.Instructor;
-
-        courseRepo.Update(course);
-
-        // ✅ رجّعي response شامل id
-        return Ok(new CourseResponseDto
-        {
-            Id = course.Id,
-            Name = course.Name,
-            Capacity = course.Capacity,
-            CertificationFee = course.CertificationFee,
-            Duration = course.Duration,
-            Price = course.Price,
-            StartDate = course.StartDate,
-            Type = course.Type.ToString(),
-            Instructor = course.Instructor,
-        });
+        return Ok(response);
     }
 
     [HttpDelete("{id:int}"), Authorize(Roles = "Admin")]
     public async Task<ActionResult<bool>> Delete(int id)
     {
-        await courseRepo.Delete(id);
+        var result = await _courseService.DeleteCourseAsync(id);
+        if (!result) return NotFound();
         return Ok(true);
-    }
-
-    private static DateTime NormalizeToUtc(DateTime value)
-    {
-        return value.Kind switch
-        {
-            DateTimeKind.Utc => value,
-            DateTimeKind.Local => value.ToUniversalTime(),
-            _ => DateTime.SpecifyKind(value, DateTimeKind.Utc)
-        };
     }
 }

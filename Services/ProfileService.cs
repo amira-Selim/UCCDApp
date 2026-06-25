@@ -74,10 +74,17 @@ public class ProfileService : IProfileService
         return await GetProfileDataAsync(email);
     }
 
-    // 5. جلب كل الطلاب (للأدمن) - بترجع كل البيانات
+    // 5. جلب كل الطلاب (للأدمن) - بترجع كل البيانات بدون حسابات الأدمن
     public async Task<ApiResponse<IEnumerable<StudentProfileDto>>> GetAllStudentsAsync()
     {
+        var adminEmails = await (from user in _context.Users
+                                 join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                                 join role in _context.Roles on userRole.RoleId equals role.Id
+                                 where role.Name == "Admin"
+                                 select user.Email).ToListAsync();
+
         var students = await _context.Students
+            .Where(s => !adminEmails.Contains(s.Email))
             .Include(s => s.StudentCourses)
             .ToListAsync();
 
