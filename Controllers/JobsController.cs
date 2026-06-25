@@ -55,7 +55,7 @@ public class JobsController : ControllerBase
     // ==========================================
 
     // 4. عرض الوظائف المتاحة للطالب (مع تشيك بوكس الفلترة بالكلية)
-    [Authorize(Roles = "Student")]
+    [Authorize(Roles = "Student,Admin")]
     [HttpGet("available")]
     public async Task<IActionResult> GetAvailableJobs([FromQuery] bool filterByMyFacultyOnly = false)
     {
@@ -68,7 +68,7 @@ public class JobsController : ControllerBase
     }
 
     // 5. عرض تفاصيل وظيفة محددة للطالب بالـ ID
-    [Authorize(Roles = "Student")]
+    [Authorize(Roles = "Student,Admin")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetJobById(int id)
     {
@@ -79,7 +79,7 @@ public class JobsController : ControllerBase
     // 6. تقديم الطالب على وظيفة
     [Authorize(Roles = "Student")]
     [HttpPost("{id}/apply")]
-    public async Task<IActionResult> ApplyForJob(int id, [FromBody] ApplyJobDto dto)
+    public async Task<IActionResult> ApplyForJob(int id, [FromForm] ApplyJobDto dto)
     {
         var studentEmail = User.FindFirstValue(ClaimTypes.Email);
         if (string.IsNullOrEmpty(studentEmail))
@@ -98,6 +98,18 @@ public class JobsController : ControllerBase
         if (string.IsNullOrEmpty(studentEmail))
             return Unauthorized(new ApiResponse<object> { Success = false, Message = "User email not found in token." });
         var response = await _jobBoardService.GetStudentApplicationsAsync(studentEmail);
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
+
+    [Authorize(Roles = "Student")]
+    [HttpDelete("applications/{applicationId}/cancel")]
+    public async Task<IActionResult> CancelApplication(int applicationId)
+    {
+        var studentEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(studentEmail))
+            return Unauthorized(new ApiResponse<object> { Success = false, Message = "User email not found in token." });
+
+        var response = await _jobBoardService.CancelApplicationAsync(studentEmail, applicationId);
         return response.Success ? Ok(response) : BadRequest(response);
     }
 }

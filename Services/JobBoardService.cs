@@ -16,17 +16,23 @@ public class JobBoardService : IJobBoardService
     private readonly IGenericRepo<JobApplication> _applicationRepo;
     private readonly AppDbContext _context;
     private readonly IEmailService _emailService;
+    private readonly INotificationService _notificationService;
+    private readonly Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment;
 
     public JobBoardService(
         IGenericRepo<JobOpportunity> jobRepo,
         IGenericRepo<JobApplication> applicationRepo,
         AppDbContext context,
-        IEmailService emailService)
+        IEmailService emailService,
+        INotificationService notificationService,
+        Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostEnvironment)
     {
         _jobRepo = jobRepo;
         _applicationRepo = applicationRepo;
         _context = context;
         _emailService = emailService;
+        _notificationService = notificationService;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     // 1. الأدمن بيضيف الوظيفة بنفسه (تنزل معتمدة ونشطة فوراً للطلاب)
@@ -41,6 +47,7 @@ public class JobBoardService : IJobBoardService
             Requirements = dto.Requirements,
             Location = dto.Location,
             SalaryRange = dto.SalaryRange,
+            Type = Enum.TryParse<JobType>(dto.Type, true, out var t) ? t : JobType.FullTime,
             TargetFaculty = dto.TargetFaculty,
             IsApproved = true // معتمدة فوراً لأن الأدمن هو اللي كاتبها
         };
@@ -57,6 +64,7 @@ public class JobBoardService : IJobBoardService
             Requirements = job.Requirements,
             Location = job.Location,
             SalaryRange = job.SalaryRange,
+            Type = job.Type.ToString(),
             TargetFaculty = job.TargetFaculty,
             IsApproved = job.IsApproved,
             CreatedAt = job.CreatedAt,
@@ -76,12 +84,10 @@ public class JobBoardService : IJobBoardService
     public async Task<ApiResponse<IEnumerable<JobOpportunityResponseDto>>> GetApprovedJobsForStudentsAsync(string studentEmail, bool filterByMyFacultyOnly)
     {
         var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == studentEmail);
-        if (student == null)
-            return new ApiResponse<IEnumerable<JobOpportunityResponseDto>> { Success = false, Message = "Student profile not found." };
 
         var query = _context.JobOpportunities.Where(j => j.IsApproved && (j.Deadline == null || j.Deadline > DateTime.UtcNow));
 
-        if (filterByMyFacultyOnly && !string.IsNullOrWhiteSpace(student.Faculty))
+        if (filterByMyFacultyOnly && student != null && !string.IsNullOrWhiteSpace(student.Faculty))
         {
             query = query.Where(j => j.TargetFaculty.ToLower() == student.Faculty.ToLower());
         }
@@ -97,6 +103,7 @@ public class JobBoardService : IJobBoardService
             Requirements = j.Requirements,
             Location = j.Location,
             SalaryRange = j.SalaryRange,
+            Type = j.Type.ToString(),
             TargetFaculty = j.TargetFaculty,
             IsApproved = j.IsApproved,
             CreatedAt = j.CreatedAt,
@@ -125,6 +132,7 @@ public class JobBoardService : IJobBoardService
             Requirements = job.Requirements,
             Location = job.Location,
             SalaryRange = job.SalaryRange,
+            Type = job.Type.ToString(),
             TargetFaculty = job.TargetFaculty,
             IsApproved = job.IsApproved,
             CreatedAt = job.CreatedAt,
@@ -150,13 +158,43 @@ public class JobBoardService : IJobBoardService
         if (alreadyApplied)
             return new ApiResponse<JobApplicationResponseDto> { Success = false, Message = "You have already applied for this vacancy." };
 
-        string finalCvPath = !string.IsNullOrWhiteSpace(dto.CvFilePath) ? dto.CvFilePath : "Profile-Default-CV.pdf";
+        if (dto.CvFile == null || dto.CvFile.Length == 0)
+            return new ApiResponse<JobApplicationResponseDto> { Success = false, Message = "CV File is required." };
+
+        // 1. Validate File Size (Max 5MB)
+        if (dto.CvFile.Length > 5 * 1024 * 1024)
+            return new ApiResponse<JobApplicationResponseDto> { Success = false, Message = "CV File size exceeds the 5MB limit." };
+
+        // 2. Validate File Extension
+        var allowedExtensions = new[] { ".pdf", ".doc", ".docx" };
+        var extension = System.IO.Path.GetExtension(dto.CvFile.FileName).ToLower();
+        if (!allowedExtensions.Contains(extension))
+            return new ApiResponse<JobApplicationResponseDto> { Success = false, Message = "Invalid CV File format. Only PDF, DOC, and DOCX are allowed." };
+
+        // 3. Prepare Upload Directory
+        var webRootPath = _webHostEnvironment.WebRootPath ?? System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "wwwroot");
+        var uploadPath = System.IO.Path.Combine(webRootPath, "uploads", "cvs");
+        if (!System.IO.Directory.Exists(uploadPath))
+        {
+            System.IO.Directory.CreateDirectory(uploadPath);
+        }
+
+        // 4. Save File
+        var uniqueFileName = Guid.NewGuid().ToString() + extension;
+        var fullPath = System.IO.Path.Combine(uploadPath, uniqueFileName);
+        using (var stream = new System.IO.FileStream(fullPath, System.IO.FileMode.Create))
+        {
+            await dto.CvFile.CopyToAsync(stream);
+        }
+
+        var finalCvPath = $"/uploads/cvs/{uniqueFileName}";
 
         var application = new JobApplication
         {
             JobOpportunityId = jobId,
             StudentId = student.Id,
             CvFilePath = finalCvPath,
+            CoverLetter = dto.CoverLetter,
             AppliedAt = DateTime.UtcNow
         };
 
@@ -184,6 +222,17 @@ public class JobBoardService : IJobBoardService
         {
             Console.WriteLine("Email tracking log: " + ex.Message);
         }
+
+        // Send notification to Admin
+        await _notificationService.CreateNotificationAsync(
+            "New Job Application",
+            $"Student {student.FullName} applied for job vacancy: {job.Title}.",
+            "JobApplication",
+            null,
+            null,
+            null,
+            jobId
+        );
 
         var responseDto = new JobApplicationResponseDto
         {
@@ -216,6 +265,7 @@ public class JobBoardService : IJobBoardService
             Requirements = j.Requirements,
             Location = j.Location,
             SalaryRange = j.SalaryRange,
+            Type = j.Type.ToString(),
             TargetFaculty = j.TargetFaculty,
             IsApproved = j.IsApproved,
             CreatedAt = j.CreatedAt,
@@ -251,6 +301,29 @@ public class JobBoardService : IJobBoardService
         return new ApiResponse<IEnumerable<JobApplicationResponseDto>> { Success = true, Data = applications };
     }
 
+    public async Task<ApiResponse<IEnumerable<JobApplicationResponseDto>>> GetApplicationsByStudentIdAsync(int studentId)
+    {
+        var applications = await _context.JobApplications
+            .Include(a => a.JobOpportunity)
+            .Include(a => a.Student)
+            .Where(a => a.StudentId == studentId)
+            .Select(a => new JobApplicationResponseDto
+            {
+                Id = a.Id,
+                JobOpportunityId = a.JobOpportunityId,
+                JobTitle = a.JobOpportunity != null ? a.JobOpportunity.Title : "",
+                CompanyName = a.JobOpportunity != null ? a.JobOpportunity.CompanyName : "",
+                StudentId = a.StudentId,
+                StudentFullName = a.Student != null ? a.Student.FullName : "",
+                StudentEmail = a.Student != null ? a.Student.Email : "",
+                StudentFaculty = a.Student != null ? (a.Student.Faculty ?? "") : "",
+                CvFilePath = a.CvFilePath ?? "",
+                AppliedAt = a.AppliedAt
+            }).ToListAsync();
+
+        return new ApiResponse<IEnumerable<JobApplicationResponseDto>> { Success = true, Data = applications };
+    }
+
     public async Task<ApiResponse<IEnumerable<JobApplicationResponseDto>>> GetStudentApplicationsAsync(string studentEmail)
 {
     var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == studentEmail);
@@ -265,16 +338,35 @@ public class JobBoardService : IJobBoardService
         {
             Id = a.Id,
             JobOpportunityId = a.JobOpportunityId,
-            JobTitle = a.JobOpportunity.Title,
-            CompanyName = a.JobOpportunity.CompanyName,
+            JobTitle = a.JobOpportunity != null ? a.JobOpportunity.Title : "",
+            CompanyName = a.JobOpportunity != null ? a.JobOpportunity.CompanyName : "",
             StudentId = a.StudentId,
             StudentFullName = student.FullName,
             StudentEmail = student.Email,
-            StudentFaculty = student.Faculty,
-            CvFilePath = a.CvFilePath,
+            StudentFaculty = student.Faculty ?? "",
+            CvFilePath = a.CvFilePath ?? "",
             AppliedAt = a.AppliedAt
         })
         .ToListAsync();
     return new ApiResponse<IEnumerable<JobApplicationResponseDto>> { Success = true, Data = applications };
 }
+
+public async Task<ApiResponse<string>> CancelApplicationAsync(string email, int applicationId)
+{
+    var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == email);
+    if (student == null) return new ApiResponse<string> { Success = false, Message = "Student not found." };
+
+    var application = await _context.JobApplications
+        .FirstOrDefaultAsync(a => a.StudentId == student.Id && a.Id == applicationId);
+
+    if (application == null)
+        return new ApiResponse<string> { Success = false, Message = "Application not found." };
+
+    // JobApplications don't currently have a Status field, so we just allow them to cancel.
+    _context.JobApplications.Remove(application);
+    await _context.SaveChangesAsync();
+
+    return new ApiResponse<string> { Success = true, Message = "تم إزالة الطلب بنجاح." };
+}
+
 }
