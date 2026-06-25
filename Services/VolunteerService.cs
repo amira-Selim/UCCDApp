@@ -382,8 +382,8 @@ public class VolunteerService : IVolunteerService
         if (application == null)
             return new ApiResponse<string> { Success = false, Message = "Application not found." };
 
-        if (application.Status == VolunteerStatus.Approved || application.Status == VolunteerStatus.Completed)
-            return new ApiResponse<string> { Success = false, Message = "لا يمكنك إلغاء أو حذف طلب تم قبوله أو إكماله." };
+        if (application.Status == VolunteerStatus.Approved)
+            return new ApiResponse<string> { Success = false, Message = "لا يمكنك إلغاء أو حذف طلب تم قبوله." };
 
         var oppTitle = application.Opportunity?.Title ?? "a volunteer opportunity";
 
