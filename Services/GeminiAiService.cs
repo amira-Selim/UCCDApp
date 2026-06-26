@@ -155,10 +155,10 @@ Return ONLY a comma-separated list of IDs (e.g., 1, 5, 8). Do not include any ot
             var aiResult = await CallGeminiApiAsync(prompt);
 
             var recommendedJobIds = new List<int>();
-            var splitIds = aiResult.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var idStr in splitIds)
+            var matches = System.Text.RegularExpressions.Regex.Matches(aiResult, @"\d+");
+            foreach (System.Text.RegularExpressions.Match match in matches)
             {
-                if (int.TryParse(idStr.Trim(), out int id))
+                if (int.TryParse(match.Value, out int id))
                 {
                     recommendedJobIds.Add(id);
                 }
@@ -222,10 +222,10 @@ Return ONLY a comma-separated list of IDs (e.g., 2, 6, 9). Do not include any ot
             var aiResult = await CallGeminiApiAsync(prompt);
 
             var recommendedCourseIds = new List<int>();
-            var splitIds = aiResult.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var idStr in splitIds)
+            var matches = System.Text.RegularExpressions.Regex.Matches(aiResult, @"\d+");
+            foreach (System.Text.RegularExpressions.Match match in matches)
             {
-                if (int.TryParse(idStr.Trim(), out int id))
+                if (int.TryParse(match.Value, out int id))
                 {
                     recommendedCourseIds.Add(id);
                 }
