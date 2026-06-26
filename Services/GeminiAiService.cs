@@ -166,9 +166,15 @@ Return ONLY a comma-separated list of IDs (e.g., 1, 5, 8). Do not include any ot
 
             var recommendedJobs = jobsList.Where(j => recommendedJobIds.Contains(j.Id)).ToList();
             
-            // Fallback if AI parsing fails
+            // Fallback if AI parsing fails or API key is invalid
             if (!recommendedJobs.Any())
             {
+                var fallbackJobs = jobsList.Where(j => 
+                    j.Title.Contains(profile.Faculty, StringComparison.OrdinalIgnoreCase) ||
+                    (profile.Skills != null && j.Title.Contains(profile.Skills.Split(',').FirstOrDefault() ?? "", StringComparison.OrdinalIgnoreCase))
+                ).Take(3).ToList();
+
+                if (fallbackJobs.Any()) return fallbackJobs;
                 return jobsList.Take(3);
             }
 
@@ -229,6 +235,13 @@ Return ONLY a comma-separated list of IDs (e.g., 2, 6, 9). Do not include any ot
             
             if (!recommendedCourses.Any())
             {
+                var fallbackStr = request?.FieldOfInterest ?? "";
+                var fallbackCourses = coursesList.Where(c => 
+                    c.Name.Contains(fallbackStr, StringComparison.OrdinalIgnoreCase) ||
+                    (c.Type != null && c.Type.Contains(fallbackStr, StringComparison.OrdinalIgnoreCase))
+                ).Take(3).ToList();
+
+                if (fallbackCourses.Any()) return fallbackCourses;
                 return coursesList.Take(3);
             }
 
