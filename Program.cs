@@ -23,6 +23,7 @@ app.UseSwaggerUI();
 
 // 2. الـ Middleware (الترتيب هنا مهم)
 app.UseHttpsRedirection();
+app.UseDefaultFiles();
 app.UseStaticFiles(); // Added for CV file uploads
 app.UseRouting();
 
@@ -55,5 +56,7 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine("Error during seeding: " + ex.Message);
     }
 }
+
+app.MapFallbackToFile("index.html");
 
 app.Run();
