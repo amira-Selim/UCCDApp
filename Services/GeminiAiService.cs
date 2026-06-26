@@ -206,7 +206,7 @@ You are an AI Course Advisor.
 Student Skills: {profile.Skills}
 Student Faculty: {profile.Faculty}
 
-The student also answered a questionnaire with the following:
+The student just answered a NEW questionnaire with the following:
 1. Field of interest: {request?.FieldOfInterest ?? "Not specified"}
 2. Primary career goal: {request?.CareerGoal ?? "Not specified"}
 3. Current level in this field: {request?.CurrentLevel ?? "Not specified"}
@@ -214,12 +214,19 @@ The student also answered a questionnaire with the following:
 Available Courses (JSON format):
 {coursesJson}
 
-Based on the student's skills, answers, and level, return the IDs of the top 3 best matching courses from the list.
+CRITICAL: Your recommendations MUST be based PRIMARILY on the student's NEW questionnaire answers (Field of interest and Career goal). Do NOT just recommend courses based on their existing profile skills. Give priority to what they just typed in the questionnaire.
+
+Based on this, return the IDs of the top 3 best matching courses from the list.
 Make sure the course complexity matches their stated level if possible.
 Return ONLY a comma-separated list of IDs (e.g., 2, 6, 9). Do not include any other text.
 ";
 
             var aiResult = await CallGeminiApiAsync(prompt);
+
+            if (aiResult.StartsWith("Error"))
+            {
+                return new List<CourseResponseDto> { new CourseResponseDto { Id = -1, Name = aiResult, Type = "AI Error" } };
+            }
 
             var recommendedCourseIds = new List<int>();
             var matches = System.Text.RegularExpressions.Regex.Matches(aiResult, @"\d+");
