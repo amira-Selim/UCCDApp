@@ -36,7 +36,7 @@ namespace UCCD_App.Services
                 return "This is a placeholder AI response because the Gemini API Key is not set in appsettings.json.";
             }
 
-            var requestUrl = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={apiKey}";
+            var requestUrl = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={apiKey}";
 
             var payload = new
             {
