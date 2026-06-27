@@ -15,10 +15,12 @@ namespace UCCD_App.Controllers;
 public class CompaniesController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UCCD_App.Services.IEmailService _emailService;
 
-    public CompaniesController(UserManager<ApplicationUser> userManager)
+    public CompaniesController(UserManager<ApplicationUser> userManager, UCCD_App.Services.IEmailService emailService)
     {
         _userManager = userManager;
+        _emailService = emailService;
     }
 
     [HttpGet]
@@ -63,6 +65,30 @@ public class CompaniesController : ControllerBase
         }
 
         await _userManager.AddToRoleAsync(companyUser, "Company");
+
+        // Send email to the company
+        string subject = "Welcome to UCCD Portal - Company Account";
+        string body = $@"
+            <h3>Welcome to UCCD Portal, {dto.Name}!</h3>
+            <p>Your company account has been created successfully by the Administrator.</p>
+            <p>Here are your login credentials:</p>
+            <ul>
+                <li><strong>Email:</strong> {dto.Email}</li>
+                <li><strong>Temporary Password:</strong> {dto.Password}</li>
+            </ul>
+            <p>You will be required to change your password upon your first login.</p>
+            <br>
+            <p>Thank you,</p>
+            <p>UCCD Admin Team</p>";
+
+        try
+        {
+            await _emailService.SendEmailToUserAsync(dto.Email, subject, body);
+        }
+        catch (System.Exception)
+        {
+            // Log or ignore email failure so we don't break the creation process
+        }
 
         return Ok(new ApiResponse<object>
         {
