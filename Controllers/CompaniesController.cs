@@ -50,7 +50,7 @@ public class CompaniesController : ControllerBase
         {
             FullName = dto.Name,
             Email = dto.Email,
-            UserName = dto.Email.Split('@').First(),
+            UserName = dto.Email,
             RequirePasswordChange = true
         };
 
