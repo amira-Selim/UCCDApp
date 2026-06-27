@@ -41,12 +41,53 @@ public class JobsController : ControllerBase
         return response.Success ? Ok(response) : BadRequest(response);
     }
 
-    // 3. الأدمن بيشوف الطلاب اللي قدموا على وظيفة معينة بالـ CVs بتاعتهم
-    [Authorize(Roles = "Admin")]
+    // 3. الأدمن أو الشركة بيشوفوا الطلاب اللي قدموا على وظيفة معينة بالـ CVs بتاعتهم
+    [Authorize(Roles = "Admin,Company")]
     [HttpGet("{id}/applications")]
     public async Task<IActionResult> GetJobApplications(int id)
     {
+        // For Company role, verify the job belongs to them
+        if (User.IsInRole("Company"))
+        {
+            var jobResponse = await _jobBoardService.GetJobByIdAsync(id);
+            if (!jobResponse.Success || jobResponse.Data == null)
+            {
+                return NotFound(new ApiResponse<object> { Success = false, Message = "Job not found." });
+            }
+            var companyEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (jobResponse.Data.CompanyEmail != companyEmail)
+            {
+                return Forbid(); // Return 403 Forbidden
+            }
+        }
+
         var response = await _jobBoardService.GetJobApplicationsAsync(id);
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
+
+    // ==========================================
+    // 🏢 ألوية الشركات فقط (Company Endpoints)
+    // ==========================================
+
+    [Authorize(Roles = "Company")]
+    [HttpPost("company-create")]
+    public async Task<IActionResult> CreateJobByCompany([FromBody] CreateJobOpportunityDto dto)
+    {
+        var companyEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(companyEmail)) return Unauthorized();
+
+        var response = await _jobBoardService.CreateJobOpportunityByCompanyAsync(companyEmail, dto);
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
+
+    [Authorize(Roles = "Company")]
+    [HttpGet("my-company-jobs")]
+    public async Task<IActionResult> GetMyCompanyJobs()
+    {
+        var companyEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(companyEmail)) return Unauthorized();
+
+        var response = await _jobBoardService.GetCompanyJobsAsync(companyEmail);
         return response.Success ? Ok(response) : BadRequest(response);
     }
 
@@ -68,7 +109,7 @@ public class JobsController : ControllerBase
     }
 
     // 5. عرض تفاصيل وظيفة محددة للطالب بالـ ID
-    [Authorize(Roles = "Student,Admin")]
+    [Authorize(Roles = "Student,Admin,Company")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetJobById(int id)
     {

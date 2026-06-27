@@ -105,4 +105,45 @@ public class ProfileService : IProfileService
 
         return new ApiResponse<StudentProfileDto> { Success = true, Data = MapToDto(student) };
     }
+
+    public async Task<ApiResponse<ApplicantProfileDto>> GetApplicantProfileAsync(int studentId)
+    {
+        var student = await _context.Students
+            .Include(s => s.StudentCourses)
+                .ThenInclude(sc => sc.Course)
+            .Include(s => s.VolunteerApplications)
+                .ThenInclude(va => va.Opportunity)
+            .FirstOrDefaultAsync(s => s.Id == studentId);
+
+        if (student == null)
+            return new ApiResponse<ApplicantProfileDto> { Success = false, Message = "Student not found" };
+
+        var dto = new ApplicantProfileDto
+        {
+            StudentId = student.Id,
+            FullName = student.FullName,
+            Email = student.Email,
+            Phone = student.Phone,
+            Faculty = student.Faculty ?? "",
+            GraduationYear = student.GraduationYear ?? "",
+            Education = student.Education ?? "",
+            Skills = student.Skills ?? "",
+            Interests = student.Interests ?? "",
+            CareerGoal = student.CareerGoal ?? "",
+            Courses = student.StudentCourses.Select(sc => new ApplicantCourseDto
+            {
+                CourseId = sc.CouresId,
+                CourseName = sc.Course?.Name ?? "",
+                Status = sc.StudentStatus.ToString()
+            }).ToList(),
+            VolunteerWork = student.VolunteerApplications.Select(va => new ApplicantVolunteerDto
+            {
+                VolunteerOpportunityId = va.OpportunityId,
+                Title = va.Opportunity?.Title ?? "",
+                Status = va.Status.ToString()
+            }).ToList()
+        };
+
+        return new ApiResponse<ApplicantProfileDto> { Success = true, Data = dto };
+    }
 }

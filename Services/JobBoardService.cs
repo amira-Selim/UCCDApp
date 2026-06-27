@@ -18,6 +18,7 @@ public class JobBoardService : IJobBoardService
     private readonly IEmailService _emailService;
     private readonly INotificationService _notificationService;
     private readonly Microsoft.AspNetCore.Hosting.IWebHostEnvironment _webHostEnvironment;
+    private readonly Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> _userManager;
 
     public JobBoardService(
         IGenericRepo<JobOpportunity> jobRepo,
@@ -25,7 +26,8 @@ public class JobBoardService : IJobBoardService
         AppDbContext context,
         IEmailService emailService,
         INotificationService notificationService,
-        Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostEnvironment)
+        Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostEnvironment,
+        Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> userManager)
     {
         _jobRepo = jobRepo;
         _applicationRepo = applicationRepo;
@@ -33,6 +35,7 @@ public class JobBoardService : IJobBoardService
         _emailService = emailService;
         _notificationService = notificationService;
         _webHostEnvironment = webHostEnvironment;
+        _userManager = userManager;
     }
 
     // 1. الأدمن بيضيف الوظيفة بنفسه (تنزل معتمدة ونشطة فوراً للطلاب)
@@ -72,12 +75,113 @@ public class JobBoardService : IJobBoardService
             TotalApplicants = 0
         };
 
+        if (dto.CreateCompanyAccount && !string.IsNullOrWhiteSpace(dto.CompanyPassword))
+        {
+            var existingUser = await _userManager.FindByEmailAsync(dto.CompanyEmail);
+            if (existingUser == null)
+            {
+                var companyUser = new ApplicationUser
+                {
+                    FullName = dto.CompanyName,
+                    Email = dto.CompanyEmail,
+                    UserName = dto.CompanyEmail.Split('@').First(),
+                    RequirePasswordChange = true
+                };
+                var result = await _userManager.CreateAsync(companyUser, dto.CompanyPassword);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(companyUser, "Company");
+                }
+                else
+                {
+                    return new ApiResponse<JobOpportunityResponseDto>
+                    {
+                        Success = false,
+                        Message = "Job created, but failed to create company account: " + string.Join(", ", result.Errors.Select(e => e.Description)),
+                        Data = responseDto
+                    };
+                }
+            }
+        }
+
         return new ApiResponse<JobOpportunityResponseDto>
         {
             Success = true,
             Message = "Job opportunity created and published to students successfully.",
             Data = responseDto
         };
+    }
+
+    public async Task<ApiResponse<JobOpportunityResponseDto>> CreateJobOpportunityByCompanyAsync(string companyEmail, CreateJobOpportunityDto dto)
+    {
+        var job = new JobOpportunity
+        {
+            Title = dto.Title,
+            CompanyName = dto.CompanyName,
+            CompanyEmail = companyEmail, // Force it to the logged in user's email
+            Description = dto.Description,
+            Requirements = dto.Requirements,
+            Location = dto.Location,
+            SalaryRange = dto.SalaryRange,
+            Type = Enum.TryParse<JobType>(dto.Type, true, out var t) ? t : JobType.FullTime,
+            TargetFaculty = dto.TargetFaculty,
+            IsApproved = false // Pending admin approval
+        };
+
+        await _jobRepo.AddAsync(job);
+
+        var responseDto = new JobOpportunityResponseDto
+        {
+            Id = job.Id,
+            Title = job.Title,
+            CompanyName = job.CompanyName,
+            CompanyEmail = job.CompanyEmail,
+            Description = job.Description,
+            Requirements = job.Requirements,
+            Location = job.Location,
+            SalaryRange = job.SalaryRange,
+            Type = job.Type.ToString(),
+            TargetFaculty = job.TargetFaculty,
+            IsApproved = job.IsApproved,
+            CreatedAt = job.CreatedAt,
+            Deadline = job.Deadline,
+            TotalApplicants = 0
+        };
+
+        return new ApiResponse<JobOpportunityResponseDto>
+        {
+            Success = true,
+            Message = "Job opportunity created and is pending Admin approval.",
+            Data = responseDto
+        };
+    }
+
+    public async Task<ApiResponse<IEnumerable<JobOpportunityResponseDto>>> GetCompanyJobsAsync(string companyEmail)
+    {
+        var jobs = await _context.JobOpportunities
+            .Where(j => j.CompanyEmail == companyEmail)
+            .OrderByDescending(j => j.CreatedAt)
+            .ToListAsync();
+
+        var result = jobs.Select(j => new JobOpportunityResponseDto
+        {
+            Id = j.Id,
+            Title = j.Title,
+            CompanyName = j.CompanyName,
+            CompanyEmail = j.CompanyEmail,
+            Description = j.Description,
+            Requirements = j.Requirements,
+            Location = j.Location,
+            SalaryRange = j.SalaryRange,
+            Type = j.Type.ToString(),
+            TargetFaculty = j.TargetFaculty,
+            IsApproved = j.IsApproved,
+            CreatedAt = j.CreatedAt,
+            Deadline = j.Deadline,
+            TotalApplicants = _context.JobApplications.Count(a => a.JobOpportunityId == j.Id)
+        }).ToList();
+
+        return new ApiResponse<IEnumerable<JobOpportunityResponseDto>> { Success = true, Data = result };
     }
 
     // 2. الطالب يعرض الوظائف المتاحة (مع الفلترة الذكية لكليته)

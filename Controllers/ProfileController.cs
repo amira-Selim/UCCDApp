@@ -48,5 +48,15 @@ namespace UCCD_App.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("applicant/{studentId}")]
+        [Authorize(Roles = "Admin,Company")]
+        public async Task<IActionResult> GetApplicantProfile(int studentId)
+        {
+            var result = await _profileService.GetApplicantProfileAsync(studentId);
+            if (!result.Success) return NotFound(result);
+
+            return Ok(result);
+        }
     }
 }

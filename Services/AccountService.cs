@@ -29,7 +29,17 @@ namespace UCCD_App.Services
                 return new ApiResponse<UserTokenResponseDto> { Success = false, Message = "Email Or Password Wrong" };
 
             var token = await TokenService.GenerateTokenAsync(user, _userManager, _configuration);
-            return new ApiResponse<UserTokenResponseDto> { Success = true, Data = new UserTokenResponseDto { FullName = user.FullName, Email = user.Email!, Token = token } };
+            return new ApiResponse<UserTokenResponseDto> 
+            { 
+                Success = true, 
+                Data = new UserTokenResponseDto 
+                { 
+                    FullName = user.FullName, 
+                    Email = user.Email!, 
+                    Token = token,
+                    RequirePasswordChange = user.RequirePasswordChange
+                } 
+            };
         }
 
         public async Task<ApiResponse<UserTokenResponseDto>> RegisterAsync(RegisterDto registerDto)
@@ -138,6 +148,31 @@ namespace UCCD_App.Services
             }
 
             return new ApiResponse<bool> { Success = true, Message = "Password has been reset successfully." };
+        }
+
+        public async Task<ApiResponse<bool>> ChangePasswordAsync(string email, ChangePasswordDto dto)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return new ApiResponse<bool> { Success = false, Message = "User not found." };
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return new ApiResponse<bool> { Success = false, Message = errors };
+            }
+
+            // Clear the RequirePasswordChange flag if it was set
+            if (user.RequirePasswordChange)
+            {
+                user.RequirePasswordChange = false;
+                await _userManager.UpdateAsync(user);
+            }
+
+            return new ApiResponse<bool> { Success = true, Message = "Password changed successfully." };
         }
     }
 }

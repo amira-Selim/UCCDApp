@@ -19,7 +19,7 @@ public static class SeedData
 
     public static async Task RoleSeed(RoleManager<IdentityRole> roleManager)
     {
-        string[] roles = { "Admin", "Student", "Registered", "Partial Registered" };
+        string[] roles = { "Admin", "Student", "Registered", "Partial Registered", "Company" };
 
         foreach (var role in roles)
         {

@@ -8,5 +8,6 @@ namespace UCCD_App.Services
     Task<ApiResponse<StudentProfileDto>> GetProfileDataAsync(string email);
     Task<ApiResponse<StudentProfileDto>> UpdateProfileAsync(string email, StudentProfileDto dto);
     Task<ApiResponse<StudentProfileDto>> UpdateProfessionalInfoAsync(string email, StudentProfileDto dto);
+    Task<ApiResponse<ApplicantProfileDto>> GetApplicantProfileAsync(int studentId);
     }
 }

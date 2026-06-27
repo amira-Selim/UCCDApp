@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace UCCD_App.Models;
 
@@ -11,4 +11,6 @@ public class ApplicationUser:IdentityUser
     public string? Faculty { get; set; } = "";
     public string? NationalID { get; set; } = "";
     public string? GraduationYear { get; set; } = "";
+    
+    public bool RequirePasswordChange { get; set; } = false;
 }

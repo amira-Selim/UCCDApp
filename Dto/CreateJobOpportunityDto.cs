@@ -33,4 +33,8 @@ public class CreateJobOpportunityDto
     public string TargetFaculty { get; set; } = ""; // الكلية المستهدفة
 
     public DateTime? Deadline { get; set; }
+    
+    // Properties for Company Account Creation
+    public bool CreateCompanyAccount { get; set; } = false;
+    public string? CompanyPassword { get; set; }
 }

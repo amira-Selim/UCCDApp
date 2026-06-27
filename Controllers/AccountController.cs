@@ -60,5 +60,17 @@ namespace UCCD_App.Controllers
             if (!result.Success) return BadRequest(result);
             return Ok(result);
         }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrEmpty(email)) return Unauthorized();
+
+            var result = await _accountService.ChangePasswordAsync(email, dto);
+            if (!result.Success) return BadRequest(result);
+            return Ok(result);
+        }
     }
 }
