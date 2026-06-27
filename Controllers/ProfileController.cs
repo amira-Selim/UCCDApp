@@ -8,7 +8,7 @@ namespace UCCD_App.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Student")] 
+    [Authorize] // Require authentication by default for the whole controller
     public class ProfileController : ControllerBase
     {
         private readonly IProfileService _profileService;
@@ -17,6 +17,7 @@ namespace UCCD_App.Controllers
         private string? UserEmail => User.FindFirstValue(ClaimTypes.Email);
 
         [HttpGet("me")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetMyProfile()
         {
             if (string.IsNullOrEmpty(UserEmail)) return Unauthorized();
@@ -28,6 +29,7 @@ namespace UCCD_App.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> UpdateProfile(StudentProfileDto dto)
         {
             if (string.IsNullOrEmpty(UserEmail)) return Unauthorized();
@@ -39,6 +41,7 @@ namespace UCCD_App.Controllers
         }
 
         [HttpPut("update-professional-info")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> UpdateProfessionalInfo(StudentProfileDto dto)
         {
             if (string.IsNullOrEmpty(UserEmail)) return Unauthorized();
