@@ -66,6 +66,14 @@ public class JobsController : ControllerBase
         return response.Success ? Ok(response) : BadRequest(response);
     }
 
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteJob(int id)
+    {
+        var response = await _jobBoardService.DeleteJobAsync(id);
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
+
     // 6. الأدمن أو الشركة بيشوفوا الطلاب اللي قدموا على وظيفة معينة بالـ CVs بتاعتهم
     [Authorize(Roles = "Admin,Company")]
     [HttpGet("{id}/applications")]

@@ -536,4 +536,32 @@ public async Task<ApiResponse<bool>> RejectJobAsync(int jobId, string reason)
     return new ApiResponse<bool> { Success = true, Data = true, Message = "Job rejected." };
 }
 
+public async Task<ApiResponse<bool>> DeleteJobAsync(int jobId)
+{
+    var job = await _context.JobOpportunities.FindAsync(jobId);
+    if (job == null) return new ApiResponse<bool> { Success = false, Message = "Job not found." };
+    
+    // Entity Framework core will cascade delete JobApplications if properly configured.
+    // However, since we are doing it manually to be safe:
+    var applications = await _context.JobApplications.Where(a => a.JobOpportunityId == jobId).ToListAsync();
+    _context.JobApplications.RemoveRange(applications);
+    
+    _context.JobOpportunities.Remove(job);
+    await _context.SaveChangesAsync();
+
+    // Notify Company that their job was deleted
+    if (!string.IsNullOrEmpty(job.CompanyEmail))
+    {
+        await _notificationService.CreateNotificationAsync(
+            title: "Job Deleted",
+            message: $"Your job posting '{job.Title}' has been permanently deleted by the Admin.",
+            type: "Danger",
+            relatedJobId: null,
+            recipientEmail: job.CompanyEmail
+        );
+    }
+
+    return new ApiResponse<bool> { Success = true, Data = true, Message = "Job permanently deleted." };
+}
+
 }

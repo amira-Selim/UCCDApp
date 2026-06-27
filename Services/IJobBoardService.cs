@@ -13,6 +13,7 @@ public interface IJobBoardService
     Task<ApiResponse<IEnumerable<JobApplicationResponseDto>>> GetApplicationsByStudentIdAsync(int studentId);
     Task<ApiResponse<bool>> ApproveJobAsync(int jobId);
     Task<ApiResponse<bool>> RejectJobAsync(int jobId, string reason);
+    Task<ApiResponse<bool>> DeleteJobAsync(int jobId);
 
     // حاجات الشركات (Company)
     Task<ApiResponse<JobOpportunityResponseDto>> CreateJobOpportunityByCompanyAsync(string companyEmail, CreateJobOpportunityDto dto);
