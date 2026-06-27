@@ -126,6 +126,15 @@ public class JobBoardService : IJobBoardService
             TotalApplicants = 0
         };
 
+        // Notify Admin that a new job is pending approval
+        await _notificationService.CreateNotificationAsync(
+            title: "New Job Pending Approval",
+            message: $"Company {job.CompanyName} has posted a new job: {job.Title}.",
+            type: "JobOpportunity",
+            relatedJobId: job.Id,
+            recipientRole: "Admin"
+        );
+
         return new ApiResponse<JobOpportunityResponseDto>
         {
             Success = true,
@@ -313,15 +322,11 @@ public class JobBoardService : IJobBoardService
 
         // Send notification to Company
         await _notificationService.CreateNotificationAsync(
-            "New Job Application",
-            $"Student {student.FullName} applied for job vacancy: {job.Title}.",
-            "JobApplication",
-            null,
-            null,
-            null,
-            jobId,
-            job.CompanyEmail, // recipientEmail
-            null // recipientRole
+            title: "New Job Application",
+            message: $"Student {student.FullName} applied for job vacancy: {job.Title}.",
+            type: "JobApplication",
+            relatedJobId: jobId,
+            recipientEmail: job.CompanyEmail
         );
 
         var responseDto = new JobApplicationResponseDto
@@ -462,14 +467,23 @@ public async Task<ApiResponse<string>> CancelApplicationAsync(string email, int 
     await _context.SaveChangesAsync();
 
     await _notificationService.CreateNotificationAsync(
-        "Application Cancelled",
-        $"Student {student.FullName} has cancelled their application for {jobTitle}.",
-        "Warning",
-        null, // Admin
-        null,
-        null,
-        application.JobOpportunityId
+        title: "Application Cancelled",
+        message: $"Student {student.FullName} has cancelled their application for {jobTitle}.",
+        type: "Warning",
+        relatedJobId: application.JobOpportunityId,
+        recipientRole: "Admin"
     );
+
+    if (!string.IsNullOrEmpty(application.JobOpportunity?.CompanyEmail))
+    {
+        await _notificationService.CreateNotificationAsync(
+            title: "Application Cancelled",
+            message: $"Student {student.FullName} has cancelled their application for {jobTitle}.",
+            type: "Warning",
+            relatedJobId: application.JobOpportunityId,
+            recipientEmail: application.JobOpportunity.CompanyEmail
+        );
+    }
 
     return new ApiResponse<string> { Success = true, Message = "تم إزالة الطلب بنجاح." };
 }
@@ -482,6 +496,19 @@ public async Task<ApiResponse<bool>> ApproveJobAsync(int jobId)
     job.Status = JobStatus.Approved;
     job.RejectionReason = null;
     await _context.SaveChangesAsync();
+
+    // Notify Company that their job was approved
+    if (!string.IsNullOrEmpty(job.CompanyEmail))
+    {
+        await _notificationService.CreateNotificationAsync(
+            title: "Job Approved",
+            message: $"Your job posting '{job.Title}' has been approved and is now visible to students.",
+            type: "JobOpportunity",
+            relatedJobId: job.Id,
+            recipientEmail: job.CompanyEmail
+        );
+    }
+
     return new ApiResponse<bool> { Success = true, Data = true, Message = "Job approved successfully." };
 }
 
@@ -493,6 +520,19 @@ public async Task<ApiResponse<bool>> RejectJobAsync(int jobId, string reason)
     job.Status = JobStatus.Rejected;
     job.RejectionReason = reason;
     await _context.SaveChangesAsync();
+
+    // Notify Company that their job was rejected
+    if (!string.IsNullOrEmpty(job.CompanyEmail))
+    {
+        await _notificationService.CreateNotificationAsync(
+            title: "Job Rejected",
+            message: $"Your job posting '{job.Title}' has been rejected. Reason: {reason}.",
+            type: "Warning",
+            relatedJobId: job.Id,
+            recipientEmail: job.CompanyEmail
+        );
+    }
+
     return new ApiResponse<bool> { Success = true, Data = true, Message = "Job rejected." };
 }
 
