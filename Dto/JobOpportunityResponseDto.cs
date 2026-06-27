@@ -15,6 +15,7 @@ public class JobOpportunityResponseDto
     public string Type { get; set; } = "";
     public string TargetFaculty { get; set; } = "";
     public int Status { get; set; }
+    public bool IsApproved { get; set; } // Added back for backwards compatibility with old frontend
     public string? RejectionReason { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? Deadline { get; set; }
