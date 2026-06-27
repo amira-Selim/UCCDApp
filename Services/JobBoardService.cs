@@ -52,7 +52,7 @@ public class JobBoardService : IJobBoardService
             SalaryRange = dto.SalaryRange,
             Type = Enum.TryParse<JobType>(dto.Type, true, out var t) ? t : JobType.FullTime,
             TargetFaculty = dto.TargetFaculty,
-            IsApproved = true // معتمدة فوراً لأن الأدمن هو اللي كاتبها
+            Status = JobStatus.Approved // معتمدة فوراً لأن الأدمن هو اللي كاتبها
         };
 
         await _jobRepo.AddAsync(job);
@@ -69,40 +69,15 @@ public class JobBoardService : IJobBoardService
             SalaryRange = job.SalaryRange,
             Type = job.Type.ToString(),
             TargetFaculty = job.TargetFaculty,
-            IsApproved = job.IsApproved,
+            Status = (int)job.Status,
+            RejectionReason = job.RejectionReason,
             CreatedAt = job.CreatedAt,
             Deadline = job.Deadline,
             TotalApplicants = 0
         };
 
-        if (dto.CreateCompanyAccount && !string.IsNullOrWhiteSpace(dto.CompanyPassword))
-        {
-            var existingUser = await _userManager.FindByEmailAsync(dto.CompanyEmail);
-            if (existingUser == null)
-            {
-                var companyUser = new ApplicationUser
-                {
-                    FullName = dto.CompanyName,
-                    Email = dto.CompanyEmail,
-                    UserName = dto.CompanyEmail.Split('@').First(),
-                    RequirePasswordChange = true
-                };
-                var result = await _userManager.CreateAsync(companyUser, dto.CompanyPassword);
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(companyUser, "Company");
-                }
-                else
-                {
-                    return new ApiResponse<JobOpportunityResponseDto>
-                    {
-                        Success = false,
-                        Message = "Job created, but failed to create company account: " + string.Join(", ", result.Errors.Select(e => e.Description)),
-                        Data = responseDto
-                    };
-                }
-            }
-        }
+        // Company account creation is now handled in the new Companies tab.
+        // We removed the logic from here to prevent redundancy.
 
         return new ApiResponse<JobOpportunityResponseDto>
         {
@@ -125,7 +100,7 @@ public class JobBoardService : IJobBoardService
             SalaryRange = dto.SalaryRange,
             Type = Enum.TryParse<JobType>(dto.Type, true, out var t) ? t : JobType.FullTime,
             TargetFaculty = dto.TargetFaculty,
-            IsApproved = false // Pending admin approval
+            Status = JobStatus.Pending // Pending admin approval
         };
 
         await _jobRepo.AddAsync(job);
@@ -142,7 +117,8 @@ public class JobBoardService : IJobBoardService
             SalaryRange = job.SalaryRange,
             Type = job.Type.ToString(),
             TargetFaculty = job.TargetFaculty,
-            IsApproved = job.IsApproved,
+            Status = (int)job.Status,
+            RejectionReason = job.RejectionReason,
             CreatedAt = job.CreatedAt,
             Deadline = job.Deadline,
             TotalApplicants = 0
@@ -175,7 +151,8 @@ public class JobBoardService : IJobBoardService
             SalaryRange = j.SalaryRange,
             Type = j.Type.ToString(),
             TargetFaculty = j.TargetFaculty,
-            IsApproved = j.IsApproved,
+            Status = (int)j.Status,
+            RejectionReason = j.RejectionReason,
             CreatedAt = j.CreatedAt,
             Deadline = j.Deadline,
             TotalApplicants = _context.JobApplications.Count(a => a.JobOpportunityId == j.Id)
@@ -189,7 +166,7 @@ public class JobBoardService : IJobBoardService
     {
         var student = await _context.Students.FirstOrDefaultAsync(s => s.Email == studentEmail);
 
-        var query = _context.JobOpportunities.Where(j => j.IsApproved && (j.Deadline == null || j.Deadline > DateTime.UtcNow));
+        var query = _context.JobOpportunities.Where(j => j.Status == JobStatus.Approved && (j.Deadline == null || j.Deadline > DateTime.UtcNow));
 
         if (filterByMyFacultyOnly && student != null && !string.IsNullOrWhiteSpace(student.Faculty))
         {
@@ -209,7 +186,8 @@ public class JobBoardService : IJobBoardService
             SalaryRange = j.SalaryRange,
             Type = j.Type.ToString(),
             TargetFaculty = j.TargetFaculty,
-            IsApproved = j.IsApproved,
+            Status = (int)j.Status,
+            RejectionReason = j.RejectionReason,
             CreatedAt = j.CreatedAt,
             Deadline = j.Deadline
         }).ToList();
@@ -238,7 +216,8 @@ public class JobBoardService : IJobBoardService
             SalaryRange = job.SalaryRange,
             Type = job.Type.ToString(),
             TargetFaculty = job.TargetFaculty,
-            IsApproved = job.IsApproved,
+            Status = (int)job.Status,
+            RejectionReason = job.RejectionReason,
             CreatedAt = job.CreatedAt,
             Deadline = job.Deadline,
             TotalApplicants = count
@@ -371,7 +350,8 @@ public class JobBoardService : IJobBoardService
             SalaryRange = j.SalaryRange,
             Type = j.Type.ToString(),
             TargetFaculty = j.TargetFaculty,
-            IsApproved = j.IsApproved,
+            Status = (int)j.Status,
+            RejectionReason = j.RejectionReason,
             CreatedAt = j.CreatedAt,
             Deadline = j.Deadline,
             TotalApplicants = _context.JobApplications.Count(a => a.JobOpportunityId == j.Id)
@@ -484,6 +464,28 @@ public async Task<ApiResponse<string>> CancelApplicationAsync(string email, int 
     );
 
     return new ApiResponse<string> { Success = true, Message = "تم إزالة الطلب بنجاح." };
+}
+
+public async Task<ApiResponse<bool>> ApproveJobAsync(int jobId)
+{
+    var job = await _context.JobOpportunities.FindAsync(jobId);
+    if (job == null) return new ApiResponse<bool> { Success = false, Message = "Job not found." };
+    
+    job.Status = JobStatus.Approved;
+    job.RejectionReason = null;
+    await _context.SaveChangesAsync();
+    return new ApiResponse<bool> { Success = true, Data = true, Message = "Job approved successfully." };
+}
+
+public async Task<ApiResponse<bool>> RejectJobAsync(int jobId, string reason)
+{
+    var job = await _context.JobOpportunities.FindAsync(jobId);
+    if (job == null) return new ApiResponse<bool> { Success = false, Message = "Job not found." };
+    
+    job.Status = JobStatus.Rejected;
+    job.RejectionReason = reason;
+    await _context.SaveChangesAsync();
+    return new ApiResponse<bool> { Success = true, Data = true, Message = "Job rejected." };
 }
 
 }

@@ -11,6 +11,8 @@ public interface IJobBoardService
     Task<ApiResponse<IEnumerable<JobOpportunityResponseDto>>> GetAllJobsForAdminAsync();
     Task<ApiResponse<IEnumerable<JobApplicationResponseDto>>> GetJobApplicationsAsync(int jobId);
     Task<ApiResponse<IEnumerable<JobApplicationResponseDto>>> GetApplicationsByStudentIdAsync(int studentId);
+    Task<ApiResponse<bool>> ApproveJobAsync(int jobId);
+    Task<ApiResponse<bool>> RejectJobAsync(int jobId, string reason);
 
     // حاجات الشركات (Company)
     Task<ApiResponse<JobOpportunityResponseDto>> CreateJobOpportunityByCompanyAsync(string companyEmail, CreateJobOpportunityDto dto);

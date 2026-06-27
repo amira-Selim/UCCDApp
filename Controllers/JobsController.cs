@@ -42,6 +42,31 @@ public class JobsController : ControllerBase
     }
 
     // 3. الأدمن أو الشركة بيشوفوا الطلاب اللي قدموا على وظيفة معينة بالـ CVs بتاعتهم
+    [Authorize(Roles = "Admin")]
+    [HttpGet("company/{email}")]
+    public async Task<IActionResult> GetJobsByCompany(string email)
+    {
+        var response = await _jobBoardService.GetCompanyJobsAsync(email);
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("{id}/approve")]
+    public async Task<IActionResult> ApproveJob(int id)
+    {
+        var response = await _jobBoardService.ApproveJobAsync(id);
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("{id}/reject")]
+    public async Task<IActionResult> RejectJob(int id, [FromBody] RejectJobDto dto)
+    {
+        var response = await _jobBoardService.RejectJobAsync(id, dto.Reason);
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
+
+    // 6. الأدمن أو الشركة بيشوفوا الطلاب اللي قدموا على وظيفة معينة بالـ CVs بتاعتهم
     [Authorize(Roles = "Admin,Company")]
     [HttpGet("{id}/applications")]
     public async Task<IActionResult> GetJobApplications(int id)

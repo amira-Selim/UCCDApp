@@ -15,7 +15,8 @@ public class JobOpportunity : BaseEntity
     public JobType Type { get; set; }                // نوع الوظيفة
     public string TargetFaculty { get; set; } = "";  // الكلية المستهدفة للفلترة (مثل: Computers and Information)
     
-    public bool IsApproved { get; set; } = false;    // موافقة الأدمن لظهور الوظيفة
+    public JobStatus Status { get; set; } = JobStatus.Pending; // حالة الوظيفة
+    public string? RejectionReason { get; set; }             // سبب الرفض إن وُجد
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? Deadline { get; set; }
 

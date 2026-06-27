@@ -14,7 +14,8 @@ public class JobOpportunityResponseDto
     public decimal? SalaryRange { get; set; }
     public string Type { get; set; } = "";
     public string TargetFaculty { get; set; } = "";
-    public bool IsApproved { get; set; }
+    public int Status { get; set; }
+    public string? RejectionReason { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? Deadline { get; set; }
     public int TotalApplicants { get; set; } // بونص للأدمن عشان يشوف كام طالب قدم

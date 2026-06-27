@@ -234,7 +234,7 @@ public static class SeedData
                 SalaryRange = item.SalaryRange,
                 Type = Enum.TryParse<JobType>(item.Type, true, out var t) ? t : JobType.FullTime,
                 TargetFaculty = item.TargetFaculty ?? string.Empty,
-                IsApproved = item.IsApproved,
+                Status = item.IsApproved ? JobStatus.Approved : JobStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
                 Deadline = NormalizeToUtc(item.Deadline)
             });
