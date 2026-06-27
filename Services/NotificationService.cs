@@ -17,7 +17,7 @@ namespace UCCD_App.Services
             _hubContext = hubContext;
         }
 
-        public async Task CreateNotificationAsync(string title, string message, string type = "Info", string? userId = null, int? relatedCourseId = null, int? relatedVolunteerId = null, int? relatedJobId = null)
+        public async Task CreateNotificationAsync(string title, string message, string type = "Info", string? userId = null, int? relatedCourseId = null, int? relatedVolunteerId = null, int? relatedJobId = null, string? recipientEmail = null, string? recipientRole = null)
         {
             var notification = new Notification
             {
@@ -28,6 +28,8 @@ namespace UCCD_App.Services
                 RelatedCourseId = relatedCourseId,
                 RelatedVolunteerId = relatedVolunteerId,
                 RelatedJobId = relatedJobId,
+                RecipientEmail = recipientEmail,
+                RecipientRole = recipientRole,
                 IsRead = false
             };
             _context.Notifications.Add(notification);

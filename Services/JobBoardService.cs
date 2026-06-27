@@ -311,7 +311,7 @@ public class JobBoardService : IJobBoardService
             Console.WriteLine("Email tracking log: " + ex.Message);
         }
 
-        // Send notification to Admin
+        // Send notification to Company
         await _notificationService.CreateNotificationAsync(
             "New Job Application",
             $"Student {student.FullName} applied for job vacancy: {job.Title}.",
@@ -319,7 +319,9 @@ public class JobBoardService : IJobBoardService
             null,
             null,
             null,
-            jobId
+            jobId,
+            job.CompanyEmail, // recipientEmail
+            null // recipientRole
         );
 
         var responseDto = new JobApplicationResponseDto
