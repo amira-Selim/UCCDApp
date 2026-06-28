@@ -17,6 +17,8 @@ public interface IJobBoardService
 
     // حاجات الشركات (Company)
     Task<ApiResponse<JobOpportunityResponseDto>> CreateJobOpportunityByCompanyAsync(string companyEmail, CreateJobOpportunityDto dto);
+    Task<ApiResponse<JobOpportunityResponseDto>> UpdateJobByCompanyAsync(string companyEmail, int jobId, CreateJobOpportunityDto dto);
+    Task<ApiResponse<bool>> DeleteJobByCompanyAsync(string companyEmail, int jobId);
     Task<ApiResponse<IEnumerable<JobOpportunityResponseDto>>> GetCompanyJobsAsync(string companyEmail);
 
     // حاجات الطلاب (استعراض والتقديم)

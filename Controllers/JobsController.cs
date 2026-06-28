@@ -124,6 +124,28 @@ public class JobsController : ControllerBase
         return response.Success ? Ok(response) : BadRequest(response);
     }
 
+    [Authorize(Roles = "Company")]
+    [HttpPut("company-update/{id}")]
+    public async Task<IActionResult> UpdateJobByCompany(int id, [FromBody] CreateJobOpportunityDto dto)
+    {
+        var companyEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(companyEmail)) return Unauthorized();
+
+        var response = await _jobBoardService.UpdateJobByCompanyAsync(companyEmail, id, dto);
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
+
+    [Authorize(Roles = "Company")]
+    [HttpDelete("company-delete/{id}")]
+    public async Task<IActionResult> DeleteJobByCompany(int id)
+    {
+        var companyEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(companyEmail)) return Unauthorized();
+
+        var response = await _jobBoardService.DeleteJobByCompanyAsync(companyEmail, id);
+        return response.Success ? Ok(response) : BadRequest(response);
+    }
+
     // ==========================================
     // 📢 ألوية الطلاب فقط (Student Endpoints)
     // ==========================================

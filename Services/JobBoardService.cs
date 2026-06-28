@@ -173,6 +173,69 @@ public class JobBoardService : IJobBoardService
         return new ApiResponse<IEnumerable<JobOpportunityResponseDto>> { Success = true, Data = result };
     }
 
+    public async Task<ApiResponse<JobOpportunityResponseDto>> UpdateJobByCompanyAsync(string companyEmail, int jobId, CreateJobOpportunityDto dto)
+    {
+        var job = await _context.JobOpportunities.FirstOrDefaultAsync(j => j.Id == jobId && j.CompanyEmail == companyEmail);
+        if (job == null) return new ApiResponse<JobOpportunityResponseDto> { Success = false, Message = "Job not found or unauthorized." };
+
+        job.Title = dto.Title;
+        job.Description = dto.Description;
+        job.Requirements = dto.Requirements;
+        job.Location = dto.Location;
+        job.SalaryRange = dto.SalaryRange;
+        job.Type = Enum.Parse<JobType>(dto.Type);
+        job.TargetFaculty = dto.TargetFaculty;
+        job.Deadline = dto.Deadline;
+        
+        job.Status = JobStatus.Pending;
+        job.RejectionReason = null;
+
+        await _context.SaveChangesAsync();
+
+        // Notify Admin that the job was updated
+        await _notificationService.CreateNotificationAsync(
+            title: "Job Updated by Company",
+            message: $"Company '{companyEmail}' has updated their job '{job.Title}' and it is pending approval.",
+            type: "JobOpportunity",
+            relatedJobId: job.Id,
+            recipientRole: "Admin"
+        );
+
+        var responseDto = new JobOpportunityResponseDto
+        {
+            Id = job.Id,
+            Title = job.Title,
+            CompanyName = job.CompanyName,
+            CompanyEmail = job.CompanyEmail,
+            Description = job.Description,
+            Requirements = job.Requirements,
+            Location = job.Location,
+            SalaryRange = job.SalaryRange,
+            Type = job.Type.ToString(),
+            TargetFaculty = job.TargetFaculty,
+            Status = (int)job.Status,
+            IsApproved = false,
+            CreatedAt = job.CreatedAt,
+            Deadline = job.Deadline
+        };
+
+        return new ApiResponse<JobOpportunityResponseDto> { Success = true, Message = "Job updated successfully and is pending Admin approval.", Data = responseDto };
+    }
+
+    public async Task<ApiResponse<bool>> DeleteJobByCompanyAsync(string companyEmail, int jobId)
+    {
+        var job = await _context.JobOpportunities.FirstOrDefaultAsync(j => j.Id == jobId && j.CompanyEmail == companyEmail);
+        if (job == null) return new ApiResponse<bool> { Success = false, Message = "Job not found or unauthorized." };
+
+        var applications = await _context.JobApplications.Where(a => a.JobOpportunityId == jobId).ToListAsync();
+        _context.JobApplications.RemoveRange(applications);
+        
+        _context.JobOpportunities.Remove(job);
+        await _context.SaveChangesAsync();
+
+        return new ApiResponse<bool> { Success = true, Message = "Job deleted successfully.", Data = true };
+    }
+
     // 2. الطالب يعرض الوظائف المتاحة (مع الفلترة الذكية لكليته)
     public async Task<ApiResponse<IEnumerable<JobOpportunityResponseDto>>> GetApprovedJobsForStudentsAsync(string studentEmail, bool filterByMyFacultyOnly)
     {
@@ -392,6 +455,7 @@ public class JobBoardService : IJobBoardService
                 StudentEmail = a.Student != null ? a.Student.Email : "",
                 StudentFaculty = a.Student != null ? (a.Student.Faculty ?? "") : "",
                 CvFilePath = a.CvFilePath ?? "",
+                CoverLetter = a.CoverLetter,
                 AppliedAt = a.AppliedAt
             }).ToListAsync();
 
@@ -415,6 +479,7 @@ public class JobBoardService : IJobBoardService
                 StudentEmail = a.Student != null ? a.Student.Email : "",
                 StudentFaculty = a.Student != null ? (a.Student.Faculty ?? "") : "",
                 CvFilePath = a.CvFilePath ?? "",
+                CoverLetter = a.CoverLetter,
                 AppliedAt = a.AppliedAt
             }).ToListAsync();
 

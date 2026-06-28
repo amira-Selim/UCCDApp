@@ -13,5 +13,6 @@ public class JobApplicationResponseDto
     public string StudentEmail { get; set; } = "";
     public string StudentFaculty { get; set; } = "";
     public string CvFilePath { get; set; } = ""; // الملف الفعلي اللي اتبعت للشركة
+    public string? CoverLetter { get; set; } // الرسالة اللي كتبها الطالب
     public DateTime AppliedAt { get; set; }
 }
